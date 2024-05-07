@@ -21,7 +21,7 @@ svg {
 
 body {
   margin: 0;
-  min-height: 100dvh;
+  min-height: 100vh;
 }
 
 h1,
@@ -48,7 +48,6 @@ body {
 main {
   display: flex;
   flex-direction: column;
-
   gap: 3rem;
   justify-content: center;
   align-items: center;
@@ -57,6 +56,7 @@ main {
 
 .container-letter {
   position: relative;
+  width: 400px; /* Ajustado el ancho para que coincida con el ancho del sobre */
 }
 
 .cover {
@@ -75,14 +75,23 @@ main {
   position: absolute;
   padding: 1.5rem;
   line-height: 2rem;
-  right: 5px;
-  /*  */
+  right: 0; /* Ajustado para que el texto esté completamente dentro del sobre */
+  bottom: 0; /* Ajustado para que el texto esté completamente dentro del sobre */
   z-index: -1;
   background: white;
-  width: 390px;
-  height: 180px;
+  width: calc(100% - 2 * 200px); /* Ajustado el ancho para que el texto esté dentro del sobre */
+  height: auto; /* Cambiado a auto para que la altura sea dinámica */
+  max-height: calc(100vh - 200px); /* Limita la altura para que no desborde la ventana */
+  max-width: calc(100% - 2 * 200px); /* Ajustado el ancho máximo */
+  overflow-y: scroll; /* Cambiado a scroll para que siempre aparezca la barra de desplazamiento */
+  overflow-x: hidden; /* Oculta la barra de desplazamiento horizontal */
 
   transition: all .75s;
+}
+
+.paper.open {
+  height: auto; /* Cambiado a auto para que la altura sea dinámica */
+  max-height: calc(100vh - 200px); /* Limita la altura para que no desborde la ventana */
 }
 
 .letter {
@@ -122,10 +131,10 @@ main {
 
 @keyframes openPaper {
   0% {
-    top: 0;
+    top: 100%; /* Cambiado para que la carta esté completamente dentro del sobre */
   }
   100% {
-    top: -120px;
+    top: -100%; /* Ajustado para extender el fondo blanco hacia arriba */
   }
 }
 
