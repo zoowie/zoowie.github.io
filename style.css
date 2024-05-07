@@ -79,10 +79,10 @@ main {
   bottom: 0; /* Ajustado para que el texto esté completamente dentro del sobre */
   z-index: -1;
   background: white;
-  width: calc(100% - 2 * 200px); /* Ajustado el ancho para que el texto esté dentro del sobre */
+  width: calc(200% - 2 * 200px); /* Ajustado el ancho para que el texto esté dentro del sobre */
   height: auto; /* Cambiado a auto para que la altura sea dinámica */
   max-height: calc(100vh - 200px); /* Limita la altura para que no desborde la ventana */
-  max-width: calc(100% - 2 * 200px); /* Ajustado el ancho máximo */
+  max-width: calc(200% - 2 * 200px); /* Ajustado el ancho máximo */
   overflow-y: scroll; /* Cambiado a scroll para que siempre aparezca la barra de desplazamiento */
   overflow-x: hidden; /* Oculta la barra de desplazamiento horizontal */
 
