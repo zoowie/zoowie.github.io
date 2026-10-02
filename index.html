@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Monitor de Solicitudes de Posiciones</title>
 <style>
   :root{--red:#E4002B;--border:#E2E2E2;--text:#222;--muted:#666;}
@@ -122,6 +123,46 @@
   .actualizar-footer{display:flex;justify-content:flex-end;align-items:center;gap:12px;
     padding:14px 24px;border-top:1px solid var(--border);}
   .btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  /* ---- Actualizar descriptivos: acordeón de funciones ---- */
+  .fx-intro{font-size:13px;color:var(--muted);margin:0 0 16px;}
+  .fx-item{border:1px solid var(--border);border-radius:10px;margin-bottom:12px;background:#fff;
+    transition:border-color .15s, box-shadow .15s;}
+  .fx-item:hover{border-color:#CFCFCF;}
+  .fx-item.open{border-color:#BDBDBD;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+  .fx-item.has-sel{border-color:var(--red);}
+  .fx-head{width:100%;display:flex;align-items:center;gap:10px;padding:16px 18px;background:none;
+    border:none;font-family:inherit;font-size:14px;text-align:left;cursor:pointer;border-radius:10px;color:var(--text);}
+  .fx-head:focus-visible{outline:2px solid var(--red);outline-offset:-2px;}
+  .fx-arrow{font-size:14px;color:#888;display:inline-block;transition:transform .2s;width:12px;}
+  .fx-item.open .fx-arrow{transform:rotate(90deg);}
+  .fx-title{font-weight:700;flex:1;}
+  .fx-sel-tag{font-size:11.5px;color:var(--red);font-weight:700;background:#FDECEA;
+    border-radius:10px;padding:2px 10px;display:none;}
+  .fx-item.has-sel .fx-sel-tag{display:inline-block;}
+  .fx-count{font-size:12px;color:#555;background:#F3F3F3;border-radius:12px;padding:3px 12px;white-space:nowrap;}
+  .fx-count b{color:#111;}
+  .fx-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease;}
+  .fx-item.open .fx-body{grid-template-rows:1fr;}
+  .fx-body-inner{overflow:hidden;min-height:0;visibility:hidden;transition:visibility 0s .22s;}
+  .fx-item.open .fx-body-inner{visibility:visible;transition-delay:0s;}
+  .fx-table{margin:0 0 6px;}
+  .actualizar-body .fx-table thead th{position:static;border-top:1px solid var(--border);}
+  .fx-table th:first-child,.fx-table td:first-child{width:44px;text-align:center;padding-left:18px;}
+  .fx-table td:last-child,.fx-table th:last-child{padding-right:18px;}
+  .fx-table input[type=radio]{accent-color:var(--red);cursor:pointer;}
+  .fx-cod{font-variant-numeric:tabular-nums;font-weight:700;color:#444;}
+  .tag-nueva{font-size:10.5px;font-weight:700;color:#1B6FC9;background:#E8F1FB;border-radius:8px;
+    padding:1px 7px;margin-left:8px;}
+  .hint-warn{color:#C97A00;}
+  @media (prefers-reduced-motion:reduce){
+    .fx-body,.fx-arrow,.fx-item{transition:none;}
+    .fx-body-inner{transition:none;}
+  }
+  @media (max-width:640px){
+    .fx-table th:nth-child(4),.fx-table td:nth-child(4){display:none;}
+    .fx-sel-tag{display:none !important;}
+  }
 
   .stepper{display:flex;align-items:center;gap:10px;margin-bottom:22px;font-size:12.5px;color:#999;}
   .stepper .st{display:flex;align-items:center;gap:6px;}
@@ -274,6 +315,37 @@
   .btn-sm{padding:4px 12px;font-size:11.5px;}
   .btn-guardar{position:fixed;bottom:16px;right:24px;background:#1E7B34;color:#fff;border:none;
     border-radius:20px;padding:9px 16px;font-size:12.5px;font-weight:600;cursor:pointer;z-index:60;}
+
+  /* ---- Cuadro de confirmación previo al envío ---- */
+  .dlg-back{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:none;
+    align-items:center;justify-content:center;padding:20px;}
+  .dlg-back.show{display:flex;}
+  .dlg{background:#fff;border-radius:12px;width:100%;max-width:560px;max-height:88vh;display:flex;
+    flex-direction:column;box-shadow:0 18px 50px rgba(0,0,0,.3);overflow:hidden;}
+  .dlg-head{padding:18px 22px 10px;display:flex;gap:12px;align-items:flex-start;}
+  .dlg-ic{width:28px;height:28px;border-radius:50%;background:#1B6FC9;color:#fff;flex:none;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;}
+  .dlg-head h3{margin:0 0 4px;font-size:15.5px;}
+  .dlg-head p{margin:0;font-size:12.5px;color:#555;line-height:1.5;}
+  .dlg-body{padding:6px 22px 8px;overflow-y:auto;}
+  .dlg-foot{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:14px 22px;
+    border-top:1px solid var(--border);}
+  .dlg-foot .dlg-count{margin-right:auto;font-size:12px;color:#555;}
+  .dlg-tools{display:flex;justify-content:space-between;align-items:center;margin:8px 0;font-size:12.5px;}
+  .dlg-tools label{display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;}
+  .dlg-list{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .dlg-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid #F0F0F0;
+    font-size:12.5px;cursor:pointer;}
+  .dlg-row:last-child{border-bottom:none;}
+  .dlg-row:hover{background:#FAFAFA;}
+  .dlg-row.fija{background:#FFF8E6;cursor:default;}
+  .dlg-row.sel{background:#FDECEA;}
+  .dlg-row input{accent-color:var(--red);cursor:pointer;}
+  .dlg-row .d-main{flex:1;min-width:0;}
+  .dlg-row .d-main b{font-variant-numeric:tabular-nums;margin-right:6px;}
+  .dlg-row .d-sub{color:#777;font-size:11.5px;}
+  .tag-actual{font-size:10.5px;font-weight:700;color:#8A5A00;background:#FFE7A8;border-radius:8px;padding:1px 8px;margin-left:6px;}
+  .dlg-empty{padding:16px;text-align:center;color:#999;font-size:12.5px;}
 </style>
 </head>
 <body>
@@ -331,6 +403,22 @@
     </tbody>
   </table>
 </main>
+
+<!-- Cuadro de confirmación previo al envío -->
+<div class="dlg-back" id="dlgBack" role="dialog" aria-modal="true" aria-labelledby="dlgTitulo">
+  <div class="dlg">
+    <div class="dlg-head">
+      <div class="dlg-ic">i</div>
+      <div><h3 id="dlgTitulo"></h3><p id="dlgTexto"></p></div>
+    </div>
+    <div class="dlg-body" id="dlgBody"></div>
+    <div class="dlg-foot">
+      <span class="dlg-count" id="dlgCount"></span>
+      <button class="btn btn-cancel" id="dlgCancelar">Cancelar</button>
+      <button class="btn btn-red" id="dlgConfirmar">Enviar solicitud</button>
+    </div>
+  </div>
+</div>
 
 <!-- Paso 1: tipo de solicitud (dentro de la página, sin popup) -->
 <div class="overlay" id="overlay">
@@ -500,34 +588,8 @@
     </div>
 
     <div class="actualizar-body">
-      <table>
-        <thead>
-          <tr>
-            <th></th><th>Función</th><th>Código Función</th><th>Código Posición</th>
-            <th>Posición</th><th>Colaborador</th><th>Posee Descriptivo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><input type="radio" name="selActualizar" value="801" data-nombre="Analista SAP Proyectos"></td>
-            <td>Analista SAP</td><td>701</td><td>801</td><td>Analista SAP Proyectos</td>
-            <td>Juan Pérez</td><td><span class="badge-si">Sí</span></td></tr>
-          <tr><td><input type="radio" name="selActualizar" value="802" data-nombre="Analista SAP Proyectos"></td>
-            <td>Analista SAP</td><td>701</td><td>802</td><td>Analista SAP Proyectos</td>
-            <td>María Gómez</td><td><span class="badge-si">Sí</span></td></tr>
-          <tr class="row-disabled"><td><input type="radio" disabled></td>
-            <td>Analista SAP</td><td>701</td><td>805</td><td>Analista SAP Junior</td>
-            <td>Pedro Ramírez</td><td><span class="badge-no">No</span></td></tr>
-          <tr><td><input type="radio" name="selActualizar" value="803" data-nombre="Especialista SAP"></td>
-            <td>Especialista SAP</td><td>702</td><td>803</td><td>Especialista SAP</td>
-            <td>Lucía Fernández</td><td><span class="badge-si">Sí</span></td></tr>
-          <tr><td><input type="radio" name="selActualizar" value="804" data-nombre="Coordinador SAP"></td>
-            <td>Coordinador SAP</td><td>703</td><td>804</td><td>Coordinador SAP</td>
-            <td>Andrés Torres</td><td><span class="badge-si">Sí</span></td></tr>
-          <tr class="row-disabled"><td><input type="radio" disabled></td>
-            <td>Coordinador SAP</td><td>703</td><td>806</td><td>Coordinador SAP Junior</td>
-            <td>Karla Díaz</td><td><span class="badge-no">No</span></td></tr>
-        </tbody>
-      </table>
+      <p class="fx-intro">Selecciona una función y una posición para actualizar su perfil de puesto.</p>
+      <div id="funcAcordeon"></div>
     </div>
 
     <div class="actualizar-footer">
@@ -540,31 +602,118 @@
 <script>
   const overlayActualizar = document.getElementById('overlayActualizar');
   const btnContinuarActualizar = document.getElementById('btnContinuarActualizar');
+  const hintActualizar = document.getElementById('hintActualizar');
+  const funcAcordeon = document.getElementById('funcAcordeon');
+
+  // Funciones y posiciones (layout: Código Posición / Posición / Posee Descriptivo).
+  // Las marcadas con nueva:true son posiciones recién creadas y aún no tienen descriptivo.
+  const FUNCIONES_ACTUALIZAR = [
+    { codigo: '701', nombre: 'Analista SAP', posiciones: [
+      { cod: '801', nombre: 'Analista SAP Proyectos',  colab: 'Juan Pérez',      desc: true },
+      { cod: '802', nombre: 'Analista SAP Proyectos',  colab: 'María Gómez',     desc: true },
+      { cod: '805', nombre: 'Analista SAP Junior',     colab: 'Pedro Ramírez',   desc: false },
+      { cod: '807', nombre: 'Analista SAP Finanzas',   colab: 'Vacante',         desc: false, nueva: true }
+    ]},
+    { codigo: '702', nombre: 'Especialista SAP', posiciones: [
+      { cod: '803', nombre: 'Especialista SAP',          colab: 'Lucía Fernández', desc: true },
+      { cod: '808', nombre: 'Especialista SAP Logística', colab: 'Vacante',        desc: false, nueva: true }
+    ]},
+    { codigo: '703', nombre: 'Coordinador SAP', posiciones: [
+      { cod: '804', nombre: 'Coordinador SAP',         colab: 'Andrés Torres',   desc: true },
+      { cod: '806', nombre: 'Coordinador SAP Junior',  colab: 'Karla Díaz',      desc: false },
+      { cod: '809', nombre: 'Coordinador SAP Soporte', colab: 'Vacante',         desc: false, nueva: true }
+    ]}
+  ];
+
+  let posActualizarSel = null; // { cod, nombre, desc }
+
+  function renderAcordeonActualizar() {
+    funcAcordeon.innerHTML = FUNCIONES_ACTUALIZAR.map(f => {
+      const n = f.posiciones.length;
+      const filas = f.posiciones.map(p => `
+        <tr data-cod="${p.cod}">
+          <td><input type="radio" name="selActualizar" value="${p.cod}" aria-label="Seleccionar posición ${p.cod}"></td>
+          <td class="fx-cod">${p.cod}</td>
+          <td>${p.nombre}${p.nueva ? '<span class="tag-nueva">Nueva</span>' : ''}</td>
+          <td>${p.colab}</td>
+          <td>${p.desc ? '<span class="badge-si">Sí</span>' : '<span class="badge-no">No</span>'}</td>
+        </tr>`).join('');
+      return `
+      <div class="fx-item" data-func="${f.codigo}">
+        <button type="button" class="fx-head" aria-expanded="false" aria-controls="fx-body-${f.codigo}">
+          <span class="fx-arrow" aria-hidden="true">›</span>
+          <span class="fx-title">${f.codigo}: ${f.nombre}</span>
+          <span class="fx-sel-tag"></span>
+          <span class="fx-count" title="N° de posiciones"><b>${n}</b> ${n === 1 ? 'posición' : 'posiciones'}</span>
+        </button>
+        <div class="fx-body" id="fx-body-${f.codigo}">
+          <div class="fx-body-inner">
+            <table class="fx-table">
+              <thead><tr><th></th><th>Código Posición</th><th>Posición</th><th>Colaborador</th><th>Posee Descriptivo</th></tr></thead>
+              <tbody>${filas}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    funcAcordeon.querySelectorAll('.fx-head').forEach(h => {
+      h.onclick = () => {
+        const item = h.parentElement;
+        const abierto = item.classList.toggle('open');
+        h.setAttribute('aria-expanded', abierto);
+      };
+    });
+
+    funcAcordeon.querySelectorAll('tbody tr').forEach(tr => {
+      const radio = tr.querySelector('input');
+      radio.onchange = () => seleccionarPosicionActualizar(tr.dataset.cod);
+      tr.onclick = (e) => { if (e.target !== radio) { radio.checked = true; radio.onchange(); } };
+    });
+  }
+
+  function seleccionarPosicionActualizar(cod) {
+    let sel = null, func = null;
+    FUNCIONES_ACTUALIZAR.forEach(f => f.posiciones.forEach(p => { if (p.cod === cod) { sel = p; func = f; } }));
+    if (!sel) return;
+    posActualizarSel = Object.assign({}, sel, { funcCodigo: func.codigo, funcNombre: func.nombre });
+
+    funcAcordeon.querySelectorAll('tr').forEach(t => t.classList.toggle('row-sel', t.dataset.cod === cod));
+    funcAcordeon.querySelectorAll('.fx-item').forEach(it => {
+      const es = it.dataset.func === func.codigo;
+      it.classList.toggle('has-sel', es);
+      it.querySelector('.fx-sel-tag').textContent = es ? 'Posición ' + cod + ' seleccionada' : '';
+    });
+
+    btnContinuarActualizar.disabled = false;
+    hintActualizar.className = 'hint-inline' + (sel.desc ? '' : ' hint-warn');
+    hintActualizar.textContent = sel.desc
+      ? 'Seleccionada: ' + cod + ' - ' + sel.nombre
+      : cod + ' - ' + sel.nombre + ': aún no tiene descriptivo, lo registrarás desde cero.';
+  }
 
   function abrirModalActualizar() {
-    document.querySelectorAll('input[name="selActualizar"]').forEach(r => r.checked = false);
+    posActualizarSel = null;
+    renderAcordeonActualizar();
     btnContinuarActualizar.disabled = true;
-    document.querySelectorAll('.actualizar-body tr').forEach(t => t.classList.remove('row-sel'));
-    document.getElementById('hintActualizar').textContent = '';
+    hintActualizar.className = 'hint-inline';
+    hintActualizar.textContent = '';
     overlayActualizar.classList.add('show');
   }
 
   document.getElementById('btnCerrarActualizar').onclick = () => { overlayActualizar.classList.remove('show'); overlay.classList.add('show'); };
 
-  document.querySelectorAll('input[name="selActualizar"]').forEach(r => {
-    r.onchange = () => {
-      btnContinuarActualizar.disabled = false;
-      document.querySelectorAll('.actualizar-body tr').forEach(t => t.classList.remove('row-sel'));
-      r.closest('tr').classList.add('row-sel');
-    };
-    r.closest('tr').onclick = () => { r.checked = true; r.onchange(); };
-  });
-
   btnContinuarActualizar.onclick = () => {
-    const sel = document.querySelector('input[name="selActualizar"]:checked');
-    if (!sel) return;
+    if (!posActualizarSel) return;
     overlayActualizar.classList.remove('show');
-    abrirNuevaSolicitud({ modo: 'actualizar', codigoPosicion: sel.value, nombrePosicion: sel.dataset.nombre });
+    abrirNuevaSolicitud({
+      modo: 'actualizar',
+      codigoPosicion: posActualizarSel.cod,
+      nombrePosicion: posActualizarSel.nombre,
+      conDescriptivo: posActualizarSel.desc,
+      funcCodigo: posActualizarSel.funcCodigo,
+      funcNombre: posActualizarSel.funcNombre
+    });
   };
 </script>
 
@@ -661,6 +810,9 @@
     <div class="ok">✓</div>
     <h2 style="margin:0 0 6px;">¡Solicitud enviada!</h2>
     <p style="color:#666;font-size:13px;margin:0 0 20px;">Tu solicitud <b id="exitoId"></b> fue registrada y sigue el flujo de aprobación (Nivel 1: Jefe Inmediato).</p>
+
+    <p id="exitoDetalle" style="color:#444;font-size:12.5px;margin:-8px 0 20px;"></p>
+
     <button class="btn btn-red" id="btnVolverMonitor">Volver al monitor</button>
   </div>
 
@@ -1197,8 +1349,9 @@
     carreras: 'pruebas de carreras'
   };
 
-  function cargarDatosSolicitud(modo, nombreActual) {
-    const usar = (modo === 'copiar' || modo === 'actualizar') ? datosReferencia : null;
+  function cargarDatosSolicitud(modo, nombreActual, conDescriptivo) {
+    // Si la posición a actualizar no posee descriptivo, no hay datos que precargar
+    const usar = (modo === 'copiar' || (modo === 'actualizar' && conDescriptivo !== false)) ? datosReferencia : null;
 
     document.getElementById('fResponsabilidad').value = usar ? usar.respPrincipal : '';
     document.getElementById('fReportaJerar').value = usar ? usar.reportaJerar : '';
@@ -1301,6 +1454,85 @@
     return errores.length === 0;
   }
 
+  // Texto editable del cuadro que se muestra antes de enviar "Solicitar Nueva Posición"
+  const MENSAJE_NUEVA_POSICION = {
+    titulo: '¿Enviar la solicitud de nueva posición?',
+    texto: 'La posición se creará en el sistema una vez que la solicitud sea aprobada en todos los niveles. ' +
+           'Recibirás una notificación con el código asignado y podrás darle seguimiento desde el Monitor de Solicitudes.'
+  };
+
+  const dlgBack = document.getElementById('dlgBack');
+  const dlgBody = document.getElementById('dlgBody');
+  const dlgCount = document.getElementById('dlgCount');
+  const dlgConfirmar = document.getElementById('dlgConfirmar');
+  let dlgSeleccion = new Set();   // códigos de OTRAS posiciones elegidas para actualizar
+
+  function cerrarDialogo() { dlgBack.classList.remove('show'); }
+  document.getElementById('dlgCancelar').onclick = cerrarDialogo;
+  dlgBack.addEventListener('click', e => { if (e.target === dlgBack) cerrarDialogo(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && dlgBack.classList.contains('show')) cerrarDialogo(); });
+
+  // Se ejecuta al presionar "Enviar Solicitud" (ya validado): abre el cuadro según el flujo
+  function abrirConfirmacion() {
+    const modo = window._modoActual;
+    dlgSeleccion = new Set();
+    dlgBody.innerHTML = '';
+    dlgCount.textContent = '';
+
+    if (modo === 'actualizar') {
+      const ctx = window._ctxActualizar || {};
+      const f = FUNCIONES_ACTUALIZAR.find(x => x.codigo === ctx.funcCodigo);
+      const otras = f ? f.posiciones.filter(p => p.cod !== ctx.codigoPosicion) : [];
+      const actual = f ? f.posiciones.find(p => p.cod === ctx.codigoPosicion) : null;
+      document.getElementById('dlgTitulo').textContent = '¿A qué otras posiciones deseas aplicar la actualización?';
+      document.getElementById('dlgTexto').textContent = 'Solo se listan las posiciones de la función ' + (f ? f.codigo + ': ' + f.nombre : '') +
+        '. La posición ' + ctx.codigoPosicion + ' ya está incluida. Es opcional: puedes enviar solo la actual.';
+      dlgConfirmar.textContent = 'Enviar solicitud';
+
+      const fila = (p, fija) => `<label class="dlg-row ${fija ? 'fija' : ''}" data-cod="${p.cod}">
+        <input type="checkbox" ${fija ? 'checked disabled' : ''} value="${p.cod}" aria-label="Posición ${p.cod}">
+        <span class="d-main"><b>${p.cod}</b>${p.nombre}${p.nueva ? '<span class="tag-nueva">Nueva</span>' : ''}${fija ? '<span class="tag-actual">Esta solicitud</span>' : ''}
+          <div class="d-sub">${p.colab} · ${p.desc ? 'Con descriptivo' : 'Sin descriptivo'}</div></span>
+        ${p.desc ? '<span class="badge-si">Sí</span>' : '<span class="badge-no">No</span>'}</label>`;
+
+      dlgBody.innerHTML = `
+        <div class="dlg-tools">
+          <label><input type="checkbox" id="dlgTodas" ${otras.length ? '' : 'disabled'}> Seleccionar todas</label>
+          <span style="color:#777">${otras.length} disponible${otras.length === 1 ? '' : 's'}</span>
+        </div>
+        <div class="dlg-list">${actual ? fila(actual, true) : ''}${otras.map(p => fila(p, false)).join('') || '<div class="dlg-empty">Esta función no tiene otras posiciones.</div>'}</div>`;
+
+      const todas = document.getElementById('dlgTodas');
+      const refrescar = () => {
+        dlgBody.querySelectorAll('.dlg-row:not(.fija)').forEach(r => {
+          const c = r.querySelector('input');
+          r.classList.toggle('sel', c.checked);
+        });
+        todas.checked = otras.length > 0 && dlgSeleccion.size === otras.length;
+        const n = dlgSeleccion.size + 1;
+        dlgCount.textContent = n + (n === 1 ? ' posición' : ' posiciones') + ' a actualizar';
+      };
+      dlgBody.querySelectorAll('.dlg-row:not(.fija) input').forEach(c => c.onchange = () => {
+        c.checked ? dlgSeleccion.add(c.value) : dlgSeleccion.delete(c.value);
+        refrescar();
+      });
+      todas.onchange = () => {
+        dlgBody.querySelectorAll('.dlg-row:not(.fija) input').forEach(c => {
+          c.checked = todas.checked;
+          todas.checked ? dlgSeleccion.add(c.value) : dlgSeleccion.delete(c.value);
+        });
+        refrescar();
+      };
+      refrescar();
+    } else {
+      document.getElementById('dlgTitulo').textContent = MENSAJE_NUEVA_POSICION.titulo;
+      document.getElementById('dlgTexto').textContent = MENSAJE_NUEVA_POSICION.texto;
+      dlgConfirmar.textContent = 'Confirmar y enviar';
+    }
+    dlgBack.classList.add('show');
+    dlgConfirmar.focus();
+  }
+
   document.getElementById('btnEnviarSolicitud').onclick = () => {
     const todos = obtenerErrores().concat(validarFuncionesFila());
     mostrarErrores(todos);
@@ -1309,17 +1541,27 @@
       (todos[0].el || document.getElementById(todos[0].id)).focus();
       return;
     }
+    abrirConfirmacion();
+  };
+
+  // Envío real: se ejecuta al confirmar en el cuadro
+  dlgConfirmar.onclick = () => {
+    cerrarDialogo();
+    const extras = window._modoActual === 'actualizar' ? [...dlgSeleccion] : [];
     const id = 'SOL-' + '202609-' + String(contadorSolicitudes++).padStart(4, '0');
     const hoy = new Date().toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const posTxt = document.getElementById('fNombrePuesto').value + (extras.length ? ` (+${extras.length} ${extras.length === 1 ? 'posición' : 'posiciones'})` : '');
     const tr = document.createElement('tr');
     tr.className = 'fila-nueva';
     tr.innerHTML = `<td>${id}</td><td>${document.getElementById('motivoTexto').textContent}</td><td>Finanzas</td>
-      <td>SAP y Procesos Financieros</td><td>${document.getElementById('fNombrePuesto').value}</td><td>OMAR ALBERTO ZAMUDIO</td>
+      <td>SAP y Procesos Financieros</td><td>${posTxt}</td><td>OMAR ALBERTO ZAMUDIO</td>
       <td class="estado">Pendiente Aprobación Nivel 1</td><td>${hoy}</td><td class="chev">›</td>`;
     document.querySelector('main table tbody').prepend(tr);
     const h2 = document.querySelector('.section-head h2');
     h2.textContent = h2.textContent.replace(/\((\d+)\)/, (m, n) => '(' + (parseInt(n) + 1) + ')');
     document.getElementById('exitoId').textContent = id;
+    document.getElementById('exitoDetalle').textContent = window._modoActual === 'actualizar'
+      ? 'Posiciones incluidas: ' + [window._ctxActualizar.codigoPosicion, ...extras].join(', ') + '.' : '';
     document.getElementById('formBody').style.display = 'none';
     document.querySelector('.btn-guardar').style.display = 'none';
     document.getElementById('msgPill').classList.remove('show');
@@ -1328,7 +1570,8 @@
 </script>
 
 <script>
-  function abrirNuevaSolicitud({ modo, nombrePosicion, codigoPosicion }) {
+  function abrirNuevaSolicitud({ modo, nombrePosicion, codigoPosicion, conDescriptivo, funcCodigo, funcNombre }) {
+    window._ctxActualizar = { codigoPosicion, funcCodigo, funcNombre };
     document.getElementById('overlay').classList.remove('show');
     document.getElementById('overlayCopiar').classList.remove('show');
     document.getElementById('overlayActualizar').classList.remove('show');
@@ -1352,11 +1595,12 @@
     }
 
     document.getElementById('exitoSolicitud').classList.remove('show');
+    document.getElementById('exitoDetalle').textContent = '';
     document.getElementById('formBody').style.display = '';
     document.querySelector('.btn-guardar').style.display = '';
     window._modoActual = modo;
     document.getElementById('pageNuevaSolicitud').classList.add('show');
-    cargarDatosSolicitud(modo, nombrePosicion);
+    cargarDatosSolicitud(modo, nombrePosicion, conDescriptivo);
   }
 
   // "Regresar" vuelve al paso anterior según la ruta elegida
