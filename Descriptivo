@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Monitor de Solicitudes de Posiciones</title>
+<style>
+  :root{--red:#E4002B;--border:#E2E2E2;--text:#222;--muted:#666;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:#fff;}
+  header{background:var(--red);color:#fff;height:56px;display:flex;align-items:center;
+    padding:0 20px;gap:16px;}
+  header .back{font-size:18px;cursor:pointer;}
+  header .logo{font-weight:800;font-style:italic;}
+  header .title{font-weight:700;font-size:15px;display:flex;align-items:center;gap:4px;}
+  header .spacer{flex:1;}
+  header .icon{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.25);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+  main{padding:24px 32px;}
+  h1{font-size:22px;margin:0 0 20px;}
+  .filters{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:16px;}
+  .filters .field{display:flex;flex-direction:column;gap:6px;min-width:180px;}
+  .filters label{font-size:13px;color:var(--muted);}
+  .filters select,.filters input{padding:8px 10px;border:1px solid var(--border);
+    border-radius:4px;font-size:13px;}
+  .btnrow{display:flex;gap:10px;margin-bottom:24px;}
+  .btn{border-radius:20px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;
+    border:1px solid var(--border);background:#fff;display:inline-flex;align-items:center;gap:6px;}
+  .btn-outline-red{color:var(--red);border-color:var(--red);}
+  .btn-outline-green{color:#1E7B34;border-color:#1E7B34;}
+  .btn-red{background:var(--red);color:#fff;border-color:var(--red);}
+  .section-head{display:flex;align-items:center;justify-content:space-between;
+    border-top:1px solid var(--border);padding-top:16px;margin-bottom:12px;}
+  .section-head h2{font-size:16px;margin:0;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{text-align:left;padding:10px 8px;color:var(--muted);font-size:11px;
+    text-transform:uppercase;letter-spacing:.03em;border-bottom:1px solid var(--border);}
+  tbody td{padding:12px 8px;border-bottom:1px solid #F0F0F0;}
+  tbody tr:hover{background:#FAFAFA;}
+  .estado{color:#C97A00;font-weight:600;text-decoration:underline;cursor:default;}
+  .chev{color:#999;}
+
+  /* ---- Modal ---- */
+  .overlay{position:fixed;top:56px;left:0;right:0;bottom:0;background:#fff;display:none;
+    align-items:flex-start;justify-content:center;z-index:10;overflow-y:auto;padding:24px 32px;}
+  .overlay.show{display:flex;}
+  .modal{background:#fff;width:100%;max-width:1000px;padding:0;}
+  .modal h3{margin:0 0 18px;font-size:16px;}
+  .opt{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:14px;}
+  .opt.sub{display:none;margin-left:28px;font-size:13px;color:var(--muted);}
+  .opt.sub.show{display:flex;}
+  .hint{font-size:12px;color:var(--muted);margin:14px 0 0;padding-top:10px;
+    border-top:1px solid #F0F0F0;display:none;}
+  .hint.show{display:block;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;}
+  .btn-cancel{background:#fff;border:1px solid var(--border);}
+
+  /* ---- Modal: Copiar Modelo de Descriptivo ---- */
+  .modal-wide{background:#fff;border:1px solid var(--border);border-radius:8px;width:100%;
+    max-width:1100px;overflow:hidden;}
+  .modal-wide-head{display:flex;justify-content:space-between;align-items:center;
+    padding:16px 24px;border-bottom:1px solid var(--border);}
+  .modal-wide-head h3{margin:0;font-size:16px;}
+  .close-x{cursor:pointer;font-size:18px;color:#999;background:none;border:none;}
+  .copiar-layout{display:flex;height:480px;}
+  .tree-panel{width:320px;border-right:1px solid var(--border);padding:18px 20px;overflow-y:auto;}
+  .tree-panel .tree-title{font-size:12px;color:var(--muted);margin:0 0 14px;}
+  ul.func-list{list-style:none;margin:0;padding:0;}
+  .func-header{cursor:pointer;font-weight:600;font-size:13px;padding:7px 4px;
+    display:flex;align-items:center;gap:6px;border-radius:4px;}
+  .func-header:hover{background:#F5F5F5;}
+  .func-header .arrow{font-size:11px;color:#888;transition:transform .15s;}
+  li.func.expanded > .func-header .arrow{transform:rotate(90deg);}
+  ul.pos-list{list-style:none;margin:2px 0 6px 20px;padding:0;display:none;}
+  li.func.expanded > ul.pos-list{display:block;}
+  .pos-item{padding:6px 8px;font-size:12.5px;border-radius:4px;cursor:pointer;color:#444;}
+  .pos-item:hover{background:#F5F5F5;}
+  .pos-item.selected{background:#FDECEA;color:var(--red);font-weight:700;}
+  .desc-panel{flex:1;display:flex;flex-direction:column;}
+  .desc-empty{color:#999;font-size:13px;text-align:center;margin:auto;padding:20px;}
+  .desc-body{padding:18px 24px;overflow-y:auto;flex:1;display:none;}
+  .desc-body.show{display:block;}
+  .desc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .desc-head h4{margin:0;font-size:13.5px;font-weight:600;color:#444;}
+  .btn-expand{border:1px solid #2E7BD6;color:#2E7BD6;border-radius:6px;padding:6px 12px;
+    font-size:12px;cursor:pointer;background:#fff;display:inline-flex;align-items:center;gap:6px;}
+  .acc-item{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden;}
+  .acc-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;
+    font-weight:600;font-size:13px;background:#fff;}
+  .acc-header .acc-arrow{font-size:12px;color:#333;transition:transform .15s;}
+  .acc-item.open .acc-header .acc-arrow{transform:rotate(90deg);}
+  .acc-body{display:none;padding:0 14px 14px 40px;font-size:12px;color:var(--muted);}
+  .acc-item.open .acc-body{display:block;}
+  .desc-footer{display:flex;justify-content:space-between;align-items:center;
+    padding:12px 24px;border-top:1px solid var(--border);}
+  .hint-inline{font-size:12px;color:#1E7B34;}
+
+  .subhead{font-size:13px;font-weight:700;margin:16px 0 10px;color:#222;}
+  .subhead:first-child{margin-top:0;}
+  .subhead-sub{font-size:12px;font-weight:700;margin:10px 0 8px;color:#555;}
+  .field-ro{margin-bottom:12px;}
+  .field-ro label{display:block;font-size:11.5px;color:#7a8a99;margin-bottom:4px;}
+  .field-ro .val{background:#EDEDED;border-bottom:2px dashed #B9B9B9;padding:7px 10px;
+    font-size:12.5px;border-radius:2px;}
+  .val.empty{color:#999;text-align:center;}
+  .req{color:var(--red);}
+  .mini-table{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0 14px;}
+  .mini-table th{background:#F7F7F7;text-align:left;padding:6px 8px;color:#666;
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.02em;}
+  .mini-table td{padding:8px;border-bottom:1px solid #EEE;vertical-align:top;}
+  .badge-si{background:#E6F4EA;color:#1E7B34;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600;}
+  .badge-no{background:#F0F0F0;color:#777;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600;}
+
+  /* ---- Modal: Actualizar Descriptivos (tabla de seleccion) ---- */
+  .actualizar-body{padding:20px 24px;max-height:480px;overflow-y:auto;}
+  .actualizar-body table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .actualizar-body thead th{text-align:left;padding:8px;color:#666;font-size:10.5px;
+    text-transform:uppercase;letter-spacing:.02em;border-bottom:1px solid var(--border);
+    position:sticky;top:0;background:#fff;}
+  .actualizar-body tbody td{padding:9px 8px;border-bottom:1px solid #F0F0F0;}
+  .actualizar-body tr.row-disabled td{color:#BBB;}
+  .actualizar-body tr:not(.row-disabled):hover{background:#FAFAFA;}
+  .actualizar-footer{display:flex;justify-content:flex-end;align-items:center;gap:12px;
+    padding:14px 24px;border-top:1px solid var(--border);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  .stepper{display:flex;align-items:center;gap:10px;margin-bottom:22px;font-size:12.5px;color:#999;}
+  .stepper .st{display:flex;align-items:center;gap:6px;}
+  .stepper .st i{width:22px;height:22px;border-radius:50%;border:2px solid #CCC;display:flex;
+    align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:700;}
+  .stepper .st.on{color:#111;font-weight:700;}
+  .stepper .st.on i{background:var(--red);border-color:var(--red);color:#fff;}
+  .stepper .st.done i{border-color:#1E7B34;color:#1E7B34;}
+  .stepper .sep{flex:0 0 28px;height:2px;background:#DDD;}
+  .back-link{cursor:pointer;font-size:12.5px;color:#333;background:none;border:none;padding:0;}
+  .back-link:hover{color:var(--red);}
+  .wiz-title{font-size:20px;margin:0 0 4px;}
+  .wiz-sub{font-size:13px;color:var(--muted);margin:0 0 20px;}
+  .grupo-titulo{font-size:12px;font-weight:700;color:#666;text-transform:uppercase;
+    letter-spacing:.04em;margin:18px 0 10px;}
+  .cards{display:flex;gap:16px;flex-wrap:wrap;}
+  .opt-card{flex:1;min-width:240px;max-width:320px;border:1px solid var(--border);border-radius:10px;
+    padding:18px;cursor:pointer;background:#fff;text-align:left;font-family:inherit;
+    transition:border-color .15s, box-shadow .15s, transform .15s;}
+  .opt-card:hover{border-color:var(--red);box-shadow:0 4px 14px rgba(228,0,43,.12);transform:translateY(-1px);}
+  .opt-card .oc-ic{font-size:22px;margin-bottom:8px;}
+  .opt-card .oc-t{font-weight:700;font-size:14px;color:#222;margin-bottom:4px;}
+  .opt-card .oc-d{font-size:12px;color:#777;line-height:1.4;}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:#222;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;
+    pointer-events:none;transition:all .25s;z-index:90;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .invalid{border-color:var(--red) !important;background:#FFF6F7 !important;}
+  .exito{display:none;text-align:center;padding:60px 20px;}
+  .exito.show{display:block;}
+  .exito .ok{width:64px;height:64px;border-radius:50%;background:#E6F4EA;color:#1E7B34;font-size:32px;
+    display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+  tbody tr.fila-nueva td{background:#F1FAF3;}
+  .actualizar-body tr:not(.row-disabled){cursor:pointer;}
+  .actualizar-body tr.row-sel td{background:#FDECEA;}
+
+  .campo-lista-empty{color:#999;font-size:12.5px;text-align:center;padding:10px;
+    border:1px solid #F0F0F0;border-top:1px solid var(--border);}
+  .campo-lista-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+  .campo-lista-row input{flex:1;padding:7px 9px;border:1px solid var(--border);border-radius:4px;
+    font-size:12.5px;font-family:inherit;}
+
+  /* ---- Panel de mensajes de validacion (estilo SAP) ---- */
+  .msg-pill{position:fixed;bottom:16px;left:24px;background:var(--red);color:#fff;border:none;
+    border-radius:20px;padding:9px 16px;font-size:12.5px;font-weight:600;cursor:pointer;z-index:70;
+    display:none;align-items:center;gap:6px;}
+  .msg-pill.show{display:inline-flex;}
+  .msg-panel{position:fixed;bottom:60px;left:24px;width:340px;max-width:88vw;background:#fff;
+    border-radius:8px;box-shadow:0 8px 26px rgba(0,0,0,.22);z-index:71;display:none;overflow:hidden;}
+  .msg-panel.show{display:block;}
+  .msg-panel-head{display:flex;justify-content:space-between;align-items:center;
+    padding:12px 14px;border-bottom:1px solid var(--border);}
+  .msg-panel-head strong{font-size:13px;}
+  .msg-panel-head .msg-actions{display:flex;align-items:center;gap:12px;}
+  .msg-panel-head .msg-clear{font-size:12px;color:var(--red);cursor:pointer;font-weight:600;}
+  .msg-panel-head .msg-close{cursor:pointer;color:#888;font-size:15px;background:none;border:none;}
+  .msg-list{max-height:220px;overflow-y:auto;padding:6px 0;}
+  .msg-item{display:flex;gap:8px;align-items:flex-start;padding:9px 14px;font-size:12.5px;
+    color:#333;cursor:pointer;border-bottom:1px solid #F5F5F5;}
+  .msg-item:hover{background:#FAFAFA;}
+  .msg-item .msg-x{width:15px;height:15px;border-radius:50%;background:var(--red);color:#fff;
+    flex:none;display:flex;align-items:center;justify-content:center;font-size:9px;margin-top:1px;}
+  .hint-caracteres{font-size:11px;color:#888;margin:-6px 0 14px;font-style:italic;}
+
+  /* ---- Pantalla: Nueva Solicitud de Posición ---- */
+  .page-overlay{position:fixed;inset:0;background:#fff;z-index:50;display:none;overflow-y:auto;}
+  .page-overlay.show{display:block;}
+  .page-header{background:var(--red);color:#fff;height:52px;display:flex;align-items:center;
+    padding:0 20px;gap:20px;}
+  .page-header .search-box{background:rgba(255,255,255,.18);border-radius:20px;padding:6px 14px;
+    font-size:12px;display:flex;align-items:center;gap:8px;width:260px;margin:0 auto;}
+  .page-header .search-box input{background:transparent;border:none;color:#fff;font-size:12px;
+    outline:none;width:100%;}
+  .page-header .search-box input::placeholder{color:rgba(255,255,255,.75);}
+  .page-body{padding:22px 32px 90px;max-width:1200px;margin:0 auto;}
+  .page-head-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .page-head-row h1{font-size:19px;margin:0;}
+  .link-regresar{font-size:12.5px;color:#333;cursor:pointer;}
+  .pcard{border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:18px;}
+  .employee-card{display:flex;gap:16px;align-items:flex-start;}
+  .ic{display:inline-flex;width:13px;height:13px;vertical-align:-2px;margin-right:3px;}
+  .ic svg{width:100%;height:100%;}
+  .ic-red{color:var(--red);}
+  .ic-dark{color:#333;}
+  .ic-green{color:#1E7B34;}
+  .val-blue{color:#1B6FC9;}
+  .val-green{color:#1E7B34;}
+  .codigo-blue{color:#1B6FC9;font-size:12px;}
+
+  .pos-section{flex:0 0 auto;}
+  .pos-flow-row{display:flex;align-items:center;gap:36px;flex-wrap:wrap;}
+  .pos-box{background:#ECECEC;border:1px dashed #B0B0B0;border-radius:4px;padding:8px 12px;
+    font-size:13px;max-width:320px;color:#555;cursor:not-allowed;}
+  .add-btn{border:1px solid var(--red);color:var(--red);border-radius:14px;padding:4px 14px;
+    font-size:12px;cursor:pointer;background:#fff;font-weight:600;}
+  .row-right{display:flex;justify-content:flex-end;margin-bottom:8px;}
+  .field-select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:4px;
+    font-size:13px;background:#fff;box-sizing:border-box;}
+  .field-textarea{width:100%;border:1px solid var(--border);border-radius:4px;padding:10px;
+    font-size:13px;font-family:inherit;resize:vertical;box-sizing:border-box;}
+  .risk-cols{display:flex;gap:24px;flex-wrap:wrap;}
+  .risk-cols .mini-table{flex:1;min-width:300px;}
+  .tab-panel{display:none;}
+  .tab-panel.show{display:block;}
+  .btn-enviar{background:#1E7B34;color:#fff;border:1px solid #1E7B34;}
+  .table-input{width:100%;box-sizing:border-box;padding:6px 8px;border:1px solid var(--border);
+    border-radius:4px;font-size:12px;font-family:inherit;}
+  .pct-input{width:100%;text-align:center;}
+  .btn-remove-row{background:none;border:none;color:#B4001F;cursor:pointer;font-size:15px;font-weight:700;}
+  .total-ok{color:#1E7B34;font-weight:700;}
+  .total-bad{color:#B4001F;font-weight:700;}
+  .add-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .approval-flow{display:flex;align-items:center;justify-content:center;flex:1;flex-wrap:wrap;gap:0;min-width:320px;}
+  .flow-cap{width:2px;height:34px;background:#CCC;}
+  .step-simple{display:flex;flex-direction:column;align-items:center;width:130px;text-align:center;}
+  .step-circle-s{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;
+    align-items:center;justify-content:center;border:2px solid #C7CCD1;color:#8A9199;}
+  .step-circle-s svg{width:17px;height:17px;}
+  .step-simple.active .step-circle-s{border-color:#E8842C;color:#E8842C;
+    box-shadow:0 0 0 3px rgba(232,132,44,0.18);}
+  .step-simple .step-role{font-size:10.5px;font-weight:700;color:#1B6FC9;margin-top:7px;line-height:1.25;}
+  .step-simple .step-name{font-size:9.5px;color:#8A8A8A;margin-top:2px;line-height:1.25;}
+  .flow-chevron{color:#B7BDC3;font-size:15px;font-weight:700;padding:0 4px;margin-top:-16px;}
+  .sustento-row{margin-top:22px;}
+  .sustento-row textarea{width:100%;min-height:88px;border:1px solid var(--border);border-radius:4px;
+    padding:8px 10px;font-size:13px;resize:vertical;font-family:inherit;box-sizing:border-box;}
+  .avatar-icon{width:50px;height:50px;border-radius:6px;background:#EFEFEF;display:flex;
+    align-items:center;justify-content:center;font-size:20px;flex:none;}
+  .employee-info strong{font-size:13.5px;}
+  .employee-info .muted{font-size:11.5px;color:#888;margin:2px 0 8px;}
+  .info-row{display:flex;gap:40px;font-size:12px;color:#444;margin-bottom:4px;flex-wrap:wrap;}
+  .field-label{font-size:12px;color:#555;font-weight:700;display:block;margin-bottom:8px;}
+  .char-count{font-size:11px;color:#999;text-align:right;margin-top:4px;}
+  .details-section{border-top:1px solid var(--border);padding-top:16px;}
+  .details-section h2{font-size:14.5px;margin:0 0 14px;}
+  .detail-tabs{display:flex;gap:34px;border-bottom:1px solid var(--border);margin-bottom:22px;
+    flex-wrap:wrap;}
+  .detail-tab{font-size:12px;color:#888;cursor:default;display:flex;align-items:center;gap:6px;
+    padding-bottom:10px;}
+  .detail-tab.active{color:#111;font-weight:700;border-bottom:2px solid #111;margin-bottom:-1px;}
+  .tab-content h3{font-size:13px;margin:0 0 16px;}
+  .form-row{display:flex;gap:30px;margin-bottom:22px;flex-wrap:wrap;}
+  .form-field{flex:1;min-width:200px;}
+  .form-field label{display:block;font-size:12px;color:#555;margin-bottom:6px;}
+  .form-field input[type=text]{width:100%;padding:8px 10px;border:1px solid var(--border);
+    border-radius:4px;font-size:13px;}
+  .gray-input{background:#EDEDED;border-bottom:2px dashed #B9B9B9;padding:7px 10px;
+    font-size:12.5px;border-radius:2px;color:#555;}
+  .siguiente-row{display:flex;justify-content:flex-end;}
+  .btn-sm{padding:4px 12px;font-size:11.5px;}
+  .btn-guardar{position:fixed;bottom:16px;right:24px;background:#1E7B34;color:#fff;border:none;
+    border-radius:20px;padding:9px 16px;font-size:12.5px;font-weight:600;cursor:pointer;z-index:60;}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="back">‹</span>
+  <span class="logo">Claro</span>
+  <span class="title">Descriptivo del Puesto ▾</span>
+  <span class="spacer"></span>
+  <span>🔍</span>
+  <span class="icon">OAZ</span>
+</header>
+
+<main>
+  <h1>Monitor de Solicitudes de Posiciones</h1>
+
+  <div class="filters">
+    <div class="field"><label>Dirección:</label><select><option>Todas</option></select></div>
+    <div class="field"><label>Área:</label><select><option>Todas</option></select></div>
+    <div class="field"><label>Estado:</label><select><option>Pendiente de Aprobación</option></select></div>
+    <div class="field"><label>Rango de Fechas:</label><input placeholder="Seleccionar rango 📅"></div>
+  </div>
+  <div class="btnrow">
+    <button class="btn btn-outline-red">🔍 Buscar</button>
+    <button class="btn">⏷ Limpiar Filtros</button>
+  </div>
+
+  <div class="section-head">
+    <h2>Lista de Solicitudes (63)</h2>
+    <div class="btnrow" style="margin:0;">
+      <button class="btn btn-outline-green">📤 Exportar</button>
+      <button class="btn btn-red" id="btnNueva">+ Nueva Solicitud</button>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr>
+      <th>ID Solicitud</th><th>Motivo</th><th>Dirección del Solicitante</th>
+      <th>Área del Solicitante</th><th>Posición</th><th>Solicitante</th>
+      <th>Estado</th><th>Fecha de Creación</th><th></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>SOL-202608-0022</td><td>Actualización de Descriptivo</td><td>Finanzas</td>
+        <td>SAP y Procesos Financieros</td><td>Posición_PR</td><td>OMAR ALBERTO ZAMUDIO</td>
+        <td class="estado">Pendiente Aprobación Nivel 1</td><td>31/08/2026</td><td class="chev">›</td></tr>
+      <tr><td>SOL-202608-0021</td><td>Nueva Posición</td><td>Finanzas</td>
+        <td>SAP y Procesos Financieros</td><td>Prueba</td><td>OMAR ALBERTO ZAMUDIO</td>
+        <td class="estado">Pendiente Aprobación Nivel 1</td><td>31/08/2026</td><td class="chev">›</td></tr>
+      <tr><td>SOL-202608-0015</td><td>Nueva Posición</td><td>Finanzas</td>
+        <td>SAP y Procesos Financieros</td><td>prueba 8</td><td>OMAR ALBERTO ZAMUDIO</td>
+        <td class="estado">Pendiente Aprobación Nivel 1</td><td>20/08/2026</td><td class="chev">›</td></tr>
+      <tr><td>SOL-202608-0013</td><td>Nueva Posición</td><td>Finanzas</td>
+        <td>SAP y Procesos Financieros</td><td>prueba 7</td><td>OMAR ALBERTO ZAMUDIO</td>
+        <td class="estado">Pendiente Aprobación Nivel 1</td><td>20/08/2026</td><td class="chev">›</td></tr>
+    </tbody>
+  </table>
+</main>
+
+<!-- Paso 1: tipo de solicitud (dentro de la página, sin popup) -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="back-link" id="btnCancelar">‹ Volver al monitor</button>
+    <div style="height:14px;"></div>
+    <div class="stepper"><div class="st on"><i>1</i>Tipo de solicitud</div><div class="sep"></div><div class="st "><i>2</i>Selección de descriptivo</div><div class="sep"></div><div class="st "><i>3</i>Detalle de la solicitud</div></div>
+    <h2 class="wiz-title">¿Qué solicitud deseas realizar?</h2>
+    <p class="wiz-sub">Elige una opción para continuar. Avanzas automáticamente al siguiente paso.</p>
+
+    <div class="grupo-titulo">Solicitar Nueva Posición</div>
+    <div class="cards">
+      <button class="opt-card" data-ruta="cero"><div class="oc-ic">📝</div>
+        <div class="oc-t">Crear descriptivo desde cero</div>
+        <div class="oc-d">Registra todos los campos de un nuevo descriptivo.</div></button>
+      <button class="opt-card" data-ruta="copiar"><div class="oc-ic">📋</div>
+        <div class="oc-t">Copiar modelo de descriptivo</div>
+        <div class="oc-d">Parte de un descriptivo existente y ajústalo.</div></button>
+    </div>
+
+    <div class="grupo-titulo">Descriptivos existentes</div>
+    <div class="cards">
+      <button class="opt-card" data-ruta="actualizar"><div class="oc-ic">🔄</div>
+        <div class="oc-t">Actualizar descriptivos</div>
+        <div class="oc-d">Modifica el descriptivo de una posición que ya lo posee.</div></button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Copiar Modelo de Descriptivo -->
+<div class="overlay" id="overlayCopiar">
+  <div class="modal-wide">
+    <div class="modal-wide-head" style="flex-direction:column;align-items:flex-start;gap:14px;">
+      <button class="back-link" id="btnCerrarCopiar">‹ Volver al paso anterior</button>
+      <div class="stepper"><div class="st done"><i>✓</i>Tipo de solicitud</div><div class="sep"></div><div class="st on"><i>2</i>Selección de descriptivo</div><div class="sep"></div><div class="st "><i>3</i>Detalle de la solicitud</div></div>
+    </div>
+    <div class="copiar-layout">
+
+      <div class="tree-panel">
+        <p class="tree-title">Selecciona una función y posición para crear un perfil de puesto</p>
+        <ul class="func-list">
+          <li class="func">
+            <div class="func-header"><span class="arrow">›</span>701: Analista SAP</div>
+            <ul class="pos-list">
+              <li class="pos-item" data-id="801" data-nombre="Analista SAP Proyectos">801: Analista SAP Proyectos</li>
+              <li class="pos-item" data-id="802" data-nombre="Analista SAP Proyectos">802: Analista SAP Proyectos</li>
+            </ul>
+          </li>
+          <li class="func">
+            <div class="func-header"><span class="arrow">›</span>702: Especialista SAP</div>
+            <ul class="pos-list">
+              <li class="pos-item" data-id="803" data-nombre="Especialista SAP">803: Especialista SAP</li>
+            </ul>
+          </li>
+          <li class="func">
+            <div class="func-header"><span class="arrow">›</span>703: Coordinador SAP</div>
+            <ul class="pos-list">
+              <li class="pos-item" data-id="804" data-nombre="Coordinador SAP">804: Coordinador SAP</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="desc-panel">
+        <div class="desc-empty" id="descEmpty">Selecciona una posición a la izquierda para ver su descriptivo.</div>
+
+        <div class="desc-body" id="descBody">
+          <div class="desc-head">
+            <h4 id="descTitulo">Descriptivo del ...</h4>
+            <button class="btn-expand" id="btnExpandirTodo">↓⋮ Expandir todo</button>
+          </div>
+
+          <div class="acc-item" data-acc>
+            <div class="acc-header"><span class="acc-arrow">›</span>🛡️ Identificación del Puesto</div>
+            <div class="acc-body">
+              <div class="field-ro"><label>Nombre del Puesto:</label><div class="val">Prueba</div></div>
+              <div class="field-ro"><label>Dirección:</label><div class="val">Finanzas</div></div>
+              <div class="field-ro"><label>Unidad Organizativa:</label><div class="val">SAP Proyectos</div></div>
+            </div>
+          </div>
+          <div class="acc-item" data-acc>
+            <div class="acc-header"><span class="acc-arrow">›</span>📄 Descripción de la Posición</div>
+            <div class="acc-body">
+              <div class="subhead">Especificaciones del Puesto</div>
+              <div class="subhead-sub">Información General</div>
+              <div class="field-ro"><label>Responsabilidad Principal: <span class="req">*</span></label><div class="val">prueba de modificaciones</div></div>
+
+              <div class="subhead-sub">Funciones Principales</div>
+              <table class="mini-table">
+                <thead><tr><th>N°</th><th>¿Qué hace?</th><th>¿Para qué lo hace?</th><th>%</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>p</td><td>p</td><td>100%</td></tr>
+                </tbody>
+              </table>
+
+              <div class="subhead">Organización</div>
+              <div class="field-ro"><label>Reporta jerárquicamente a: <span class="req">*</span></label><div class="val">7000257 - Jefe de SAP Proyectos</div></div>
+              <div class="field-ro"><label>Reporta funcionalmente a: <span class="req">*</span></label><div class="val">7000279 - Analista SAP</div></div>
+              <div class="field-ro"><label>Supervisa a:</label>
+                <table class="mini-table">
+                  <thead><tr><th>Puesto</th><th>N° de colaboradores</th></tr></thead>
+                  <tbody><tr><td colspan="2" style="text-align:center;color:#999;">Sin datos</td></tr></tbody>
+                </table>
+              </div>
+
+              <div class="subhead">Nivel de Autoridad</div>
+              <div class="field-ro"><label>Decisiones:</label><div class="val empty">Sin datos</div></div>
+              <div class="field-ro"><label>Recomendaciones:</label><div class="val empty">Sin datos</div></div>
+
+              <div class="subhead">Calificación</div>
+              <div class="field-ro"><label>Tipo de calificación: <span class="req">*</span></label><div class="val">Fiscalizable</div></div>
+              <div class="field-ro"><label>Sustento de la calificación: <span class="req">*</span></label><div class="val">prueba</div></div>
+              <div class="field-ro"><label>Impacto (Indicador):</label><div class="val empty">Sin datos</div></div>
+            </div>
+          </div>
+          <div class="acc-item" data-acc>
+            <div class="acc-header"><span class="acc-arrow">›</span>📖 Educación</div>
+            <div class="acc-body">
+              <div class="subhead">Educación Principal</div>
+              <div class="field-ro"><label>Nivel Educativo: <span class="req">*</span></label><div class="val">Especialización</div></div>
+              <div class="field-ro"><label>Carreras: <span class="req">*</span></label><div class="val">pruebas de carreras</div></div>
+
+              <div class="subhead">Estudios Complementarios</div>
+              <div class="field-ro"><label>Descripción:</label><div class="val empty">Sin datos</div></div>
+
+              <div class="subhead">Conocimientos Deseados</div>
+              <div class="field-ro"><label>Tecnología de la Información / Herramientas:</label><div class="val empty">Sin datos</div></div>
+            </div>
+          </div>
+          <div class="acc-item" data-acc>
+            <div class="acc-header"><span class="acc-arrow">›</span>⚠️ Factores de Riesgo</div>
+            <div class="acc-body">
+              <div class="subhead">Actividades de Riesgo</div>
+              <table class="mini-table">
+                <thead><tr><th>Tipo de Actividad</th><th>Aplica</th><th>Frecuencia</th></tr></thead>
+                <tbody>
+                  <tr><td>Trabajos en altura (mayor a 1.8 m. de altura)</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+                  <tr><td>Cargar equipos o elementos que pesen más de 25 kg</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="acc-item" data-acc>
+            <div class="acc-header"><span class="acc-arrow">›</span>ℹ️ Información Complementaria</div>
+            <div class="acc-body">
+              <div class="field-ro"><label>Contexto:</label><div class="val empty" style="min-height:50px;">Sin datos</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="desc-footer">
+          <span class="hint-inline" id="hintCopiar"></span>
+          <button class="btn btn-red btn-sm" id="btnConfirmarDescriptivo">Confirmar Descriptivo</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Actualizar Descriptivos (tabla de seleccion) -->
+<div class="overlay" id="overlayActualizar">
+  <div class="modal-wide">
+    <div class="modal-wide-head" style="flex-direction:column;align-items:flex-start;gap:14px;">
+      <button class="back-link" id="btnCerrarActualizar">‹ Volver al paso anterior</button>
+      <div class="stepper"><div class="st done"><i>✓</i>Tipo de solicitud</div><div class="sep"></div><div class="st on"><i>2</i>Selección de descriptivo</div><div class="sep"></div><div class="st "><i>3</i>Detalle de la solicitud</div></div>
+    </div>
+
+    <div class="actualizar-body">
+      <table>
+        <thead>
+          <tr>
+            <th></th><th>Función</th><th>Código Función</th><th>Código Posición</th>
+            <th>Posición</th><th>Colaborador</th><th>Posee Descriptivo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><input type="radio" name="selActualizar" value="801" data-nombre="Analista SAP Proyectos"></td>
+            <td>Analista SAP</td><td>701</td><td>801</td><td>Analista SAP Proyectos</td>
+            <td>Juan Pérez</td><td><span class="badge-si">Sí</span></td></tr>
+          <tr><td><input type="radio" name="selActualizar" value="802" data-nombre="Analista SAP Proyectos"></td>
+            <td>Analista SAP</td><td>701</td><td>802</td><td>Analista SAP Proyectos</td>
+            <td>María Gómez</td><td><span class="badge-si">Sí</span></td></tr>
+          <tr class="row-disabled"><td><input type="radio" disabled></td>
+            <td>Analista SAP</td><td>701</td><td>805</td><td>Analista SAP Junior</td>
+            <td>Pedro Ramírez</td><td><span class="badge-no">No</span></td></tr>
+          <tr><td><input type="radio" name="selActualizar" value="803" data-nombre="Especialista SAP"></td>
+            <td>Especialista SAP</td><td>702</td><td>803</td><td>Especialista SAP</td>
+            <td>Lucía Fernández</td><td><span class="badge-si">Sí</span></td></tr>
+          <tr><td><input type="radio" name="selActualizar" value="804" data-nombre="Coordinador SAP"></td>
+            <td>Coordinador SAP</td><td>703</td><td>804</td><td>Coordinador SAP</td>
+            <td>Andrés Torres</td><td><span class="badge-si">Sí</span></td></tr>
+          <tr class="row-disabled"><td><input type="radio" disabled></td>
+            <td>Coordinador SAP</td><td>703</td><td>806</td><td>Coordinador SAP Junior</td>
+            <td>Karla Díaz</td><td><span class="badge-no">No</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="actualizar-footer">
+      <span class="hint-inline" id="hintActualizar"></span>
+      <button class="btn btn-red btn-sm" id="btnContinuarActualizar" disabled>Continuar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const overlayActualizar = document.getElementById('overlayActualizar');
+  const btnContinuarActualizar = document.getElementById('btnContinuarActualizar');
+
+  function abrirModalActualizar() {
+    document.querySelectorAll('input[name="selActualizar"]').forEach(r => r.checked = false);
+    btnContinuarActualizar.disabled = true;
+    document.querySelectorAll('.actualizar-body tr').forEach(t => t.classList.remove('row-sel'));
+    document.getElementById('hintActualizar').textContent = '';
+    overlayActualizar.classList.add('show');
+  }
+
+  document.getElementById('btnCerrarActualizar').onclick = () => { overlayActualizar.classList.remove('show'); overlay.classList.add('show'); };
+
+  document.querySelectorAll('input[name="selActualizar"]').forEach(r => {
+    r.onchange = () => {
+      btnContinuarActualizar.disabled = false;
+      document.querySelectorAll('.actualizar-body tr').forEach(t => t.classList.remove('row-sel'));
+      r.closest('tr').classList.add('row-sel');
+    };
+    r.closest('tr').onclick = () => { r.checked = true; r.onchange(); };
+  });
+
+  btnContinuarActualizar.onclick = () => {
+    const sel = document.querySelector('input[name="selActualizar"]:checked');
+    if (!sel) return;
+    overlayActualizar.classList.remove('show');
+    abrirNuevaSolicitud({ modo: 'actualizar', codigoPosicion: sel.value, nombrePosicion: sel.dataset.nombre });
+  };
+</script>
+
+<script>
+  const overlayCopiar = document.getElementById('overlayCopiar');
+  const descEmpty = document.getElementById('descEmpty');
+  const descBody = document.getElementById('descBody');
+  const descTitulo = document.getElementById('descTitulo');
+  const hintCopiar = document.getElementById('hintCopiar');
+
+  function abrirModalCopiar() {
+    document.querySelectorAll('.func').forEach(f => f.classList.remove('expanded'));
+    document.querySelectorAll('.pos-item').forEach(p => p.classList.remove('selected'));
+    document.querySelectorAll('.acc-item').forEach(a => a.classList.remove('open'));
+    descBody.classList.remove('show');
+    descEmpty.style.display = 'block';
+    hintCopiar.textContent = '';
+    overlayCopiar.classList.add('show');
+  }
+
+  document.getElementById('btnCerrarCopiar').onclick = () => { overlayCopiar.classList.remove('show'); overlay.classList.add('show'); };
+
+  document.querySelectorAll('.func-header').forEach(h => {
+    h.onclick = () => h.parentElement.classList.toggle('expanded');
+  });
+
+  document.querySelectorAll('.pos-item').forEach(p => {
+    p.onclick = () => {
+      document.querySelectorAll('.pos-item').forEach(x => x.classList.remove('selected'));
+      p.classList.add('selected');
+      descTitulo.textContent = 'Descriptivo del ' + p.dataset.nombre;
+      document.querySelectorAll('.acc-item').forEach(a => a.classList.remove('open'));
+      hintCopiar.textContent = '';
+      descEmpty.style.display = 'none';
+      descBody.classList.add('show');
+    };
+  });
+
+  document.querySelectorAll('.acc-header').forEach(h => {
+    h.onclick = () => h.parentElement.classList.toggle('open');
+  });
+
+  document.getElementById('btnExpandirTodo').onclick = (e) => {
+    const items = document.querySelectorAll('.acc-item');
+    const algunoCerrado = [...items].some(i => !i.classList.contains('open'));
+    items.forEach(i => i.classList.toggle('open', algunoCerrado));
+    e.target.textContent = algunoCerrado ? '↑⋮ Contraer todo' : '↓⋮ Expandir todo';
+  };
+
+  document.getElementById('btnConfirmarDescriptivo').onclick = () => {
+    const sel = document.querySelector('.pos-item.selected');
+    if (!sel) { hintCopiar.style.color = '#B4001F'; hintCopiar.textContent = 'Selecciona primero una posición.'; return; }
+    abrirNuevaSolicitud({ modo: 'copiar', nombrePosicion: sel.dataset.nombre });
+  };
+</script>
+
+<script>
+  const overlay = document.getElementById('overlay');
+
+  function mostrarToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(mostrarToast._t);
+    mostrarToast._t = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  document.getElementById('btnNueva').onclick = () => overlay.classList.add('show');
+  document.getElementById('btnCancelar').onclick = () => overlay.classList.remove('show');
+
+  // Al elegir una tarjeta se avanza directo (sin botón "Continuar")
+  document.querySelectorAll('.opt-card').forEach(c => {
+    c.onclick = () => {
+      overlay.classList.remove('show');
+      const ruta = c.dataset.ruta;
+      if (ruta === 'cero') abrirNuevaSolicitud({ modo: 'cero' });
+      else if (ruta === 'copiar') abrirModalCopiar();
+      else abrirModalActualizar();
+    };
+  });
+</script>
+
+<!-- Pantalla: Nueva Solicitud de Posición -->
+<div class="page-overlay" id="pageNuevaSolicitud">
+  <div class="page-header">
+    <span class="back">‹</span>
+    <span class="logo">Claro</span>
+    <span class="title">Descriptivo del Puesto ▾</span>
+    <div class="search-box">🔍 <input placeholder='Buscar en: "Aplicaciones"'></div>
+    <span class="icon">OAZ</span>
+  </div>
+
+  <div class="exito" id="exitoSolicitud">
+    <div class="ok">✓</div>
+    <h2 style="margin:0 0 6px;">¡Solicitud enviada!</h2>
+    <p style="color:#666;font-size:13px;margin:0 0 20px;">Tu solicitud <b id="exitoId"></b> fue registrada y sigue el flujo de aprobación (Nivel 1: Jefe Inmediato).</p>
+    <button class="btn btn-red" id="btnVolverMonitor">Volver al monitor</button>
+  </div>
+
+  <div class="page-body" id="formBody">
+    <div class="page-head-row">
+      <h1>Nueva Solicitud de Posición</h1>
+      <span class="link-regresar" id="btnRegresarSolicitud">‹ Regresar</span>
+    </div>
+    <div class="stepper"><div class="st done"><i>✓</i>Tipo de solicitud</div><div class="sep"></div><div class="st done"><i>✓</i>Selección de descriptivo</div><div class="sep"></div><div class="st on"><i>3</i>Detalle de la solicitud</div></div>
+
+    <div class="pcard employee-card">
+      <div class="avatar-icon">👤</div>
+      <div class="employee-info">
+        <strong>OMAR ALBERTO ZAMUDIO SURCO</strong>
+        <div class="codigo-blue">Código: C12417</div>
+        <div class="info-row" style="margin-top:8px;">
+          <span><i class="ic ic-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg></i>Dirección: <b class="val-blue">Administración y Finanzas</b></span>
+          <span><i class="ic ic-dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="7" height="11"/><rect x="13" y="4" width="7" height="17"/></svg></i>Área: <b class="val-blue">SAP y Procesos Financieros</b></span>
+        </div>
+        <div class="info-row">
+          <span><i class="ic ic-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg></i>Motivo: <b class="val-blue" id="motivoTexto">Nueva Posición</b></span>
+          <span><i class="ic ic-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="8,12 11,15 16,9"/></svg></i>Estado: <b class="val-green">Pendiente</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pcard">
+      <div class="pos-flow-row">
+        <div class="pos-section">
+          <span class="field-label" id="posLabel">Posición: <span class="req">*</span></span>
+          <div class="pos-box" id="posValueBox">Nombre de la posición elegida</div>
+        </div>
+
+        <div class="approval-flow">
+          <div class="flow-cap"></div>
+          <div class="step-simple active">
+            <div class="step-circle-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="13" x2="16" y2="13"/></svg></div>
+            <div class="step-role">Jefe Inmediato</div>
+            <div class="step-name">Sara Córdova</div>
+          </div>
+          <div class="flow-chevron">»</div>
+          <div class="step-simple">
+            <div class="step-circle-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="13" x2="16" y2="13"/></svg></div>
+            <div class="step-role">Director de Área</div>
+            <div class="step-name">Carlos Solano</div>
+          </div>
+          <div class="flow-chevron">»</div>
+          <div class="step-simple">
+            <div class="step-circle-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="13" x2="16" y2="13"/></svg></div>
+            <div class="step-role">Dir. Planeamiento Estratégico</div>
+            <div class="step-name">Elisa Munares</div>
+          </div>
+          <div class="flow-chevron">»</div>
+          <div class="step-simple">
+            <div class="step-circle-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="13" x2="16" y2="13"/></svg></div>
+            <div class="step-role">Jefa de Compensaciones</div>
+            <div class="step-name">Mirtha Wong</div>
+          </div>
+          <div class="flow-cap"></div>
+        </div>
+      </div>
+
+      <div class="sustento-row">
+        <span class="field-label">Sustento: <span class="req">*</span></span>
+        <textarea maxlength="250" id="fSustentoPrincipal"></textarea>
+        <div class="char-count">Quedan 250 caracteres</div>
+      </div>
+    </div>
+
+    <div class="details-section">
+      <h2>Detalles de la Solicitud</h2>
+      <div class="detail-tabs">
+        <div class="detail-tab active" data-tab="1">🛡️ Identificación del Puesto</div>
+        <div class="detail-tab" data-tab="2">📄 Descripción de la Posición</div>
+        <div class="detail-tab" data-tab="3">📖 Educación</div>
+        <div class="detail-tab" data-tab="4">⚠️ Factores de Riesgo</div>
+        <div class="detail-tab" data-tab="5">ℹ️ Información Complementaria</div>
+      </div>
+
+      <!-- TAB 1 -->
+      <div class="tab-panel show" id="tabPanel1">
+        <h3>1. Identificación del Puesto</h3>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Nombre del Puesto: <span class="req">*</span></label>
+            <input type="text" id="fNombrePuesto" placeholder="">
+          </div>
+          <div class="form-field">
+            <label>Dirección:</label>
+            <div class="gray-input">Administración y Finanzas</div>
+          </div>
+          <div class="form-field">
+            <label>Unidad Organizativa:</label>
+            <div class="gray-input">SAP Proyectos</div>
+          </div>
+        </div>
+        <div class="siguiente-row"><button class="btn btn-outline-red btn-siguiente" data-next="2">Siguiente →</button></div>
+      </div>
+
+      <!-- TAB 2 -->
+      <div class="tab-panel" id="tabPanel2">
+        <h3>2. Descripción de la Posición</h3>
+        <div class="subhead">Especificaciones del Puesto</div>
+        <div class="subhead-sub">Información General</div>
+        <div class="field-ro"><label>Responsabilidad Principal: <span class="req">*</span></label>
+          <textarea class="field-textarea" id="fResponsabilidad" placeholder="Describa la responsabilidad principal de la posición"></textarea>
+          <div class="char-count">Quedan 300 caracteres</div>
+        </div>
+
+        <div class="subhead-sub">Funciones Principales</div>
+        <div class="row-right">
+          <span id="funcionesMsg" style="font-size:11.5px;color:#999;margin-right:10px;"></span>
+          <button class="add-btn" id="btnAgregarFuncion">+ Agregar</button>
+        </div>
+        <table class="mini-table">
+          <thead><tr><th style="width:40px;">N°</th><th>¿Qué hace?</th><th>¿Para qué lo hace?</th><th style="width:90px;">%</th><th style="width:30px;"></th></tr></thead>
+          <tbody id="fFuncionesBody"><tr><td colspan="5" style="text-align:center;color:#999;">Sin datos</td></tr></tbody>
+          <tfoot><tr><td colspan="3" style="text-align:right;font-weight:700;font-size:12px;">Total:</td>
+            <td colspan="2"><span id="funcionesTotal" class="total-bad">0%</span></td></tr></tfoot>
+        </table>
+        <div class="hint-caracteres">"¿Qué hace?" y "¿Para qué lo hace?" admiten un máximo de 300 caracteres cada uno.</div>
+
+        <div class="subhead">Organización</div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Reporta jerárquicamente a: <span class="req">*</span></label>
+            <select class="field-select" id="fReportaJerar">
+              <option value="">Seleccionar</option>
+              <option>700 - Jefe SAP Proyectos</option>
+              <option>801 - Analista SAP Proyectos</option>
+              <option>802 - Analista SAP Proyectos</option>
+              <option>803 - Especialista SAP</option>
+              <option>804 - Coordinador SAP</option>
+              <option>805 - Analista SAP Junior</option>
+              <option>806 - Coordinador SAP Junior</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Reporta funcionalmente a: <span class="req">*</span></label>
+            <select class="field-select" id="fReportaFunc">
+              <option value="">Seleccionar</option>
+              <option>700 - Jefe SAP Proyectos</option>
+              <option>801 - Analista SAP Proyectos</option>
+              <option>802 - Analista SAP Proyectos</option>
+              <option>803 - Especialista SAP</option>
+              <option>804 - Coordinador SAP</option>
+              <option>805 - Analista SAP Junior</option>
+              <option>806 - Coordinador SAP Junior</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-ro"><label>Supervisa a:</label></div>
+        <div class="row-right"><button class="add-btn" id="btnAgregarSupervisa">+ Agregar</button></div>
+        <table class="mini-table">
+          <thead><tr><th>Puesto</th><th>N° de colaboradores</th><th style="width:30px;"></th></tr></thead>
+          <tbody id="supervisaBody"><tr><td colspan="3" style="text-align:center;color:#999;">Sin datos</td></tr></tbody>
+        </table>
+
+        <div class="subhead">Nivel de Autoridad</div>
+        <div class="risk-cols">
+          <div style="flex:1;min-width:280px;">
+            <div class="field-ro"><label>Decisiones:</label></div>
+            <div class="row-right"><button class="add-btn" id="btnAgregarDecision">+ Agregar</button></div>
+            <div id="listaDecisiones" class="campo-lista">
+              <div class="campo-lista-empty">Sin datos</div>
+            </div>
+          </div>
+          <div style="flex:1;min-width:280px;">
+            <div class="field-ro"><label>Recomendaciones:</label></div>
+            <div class="row-right"><button class="add-btn" id="btnAgregarRecomendacion">+ Agregar</button></div>
+            <div id="listaRecomendaciones" class="campo-lista">
+              <div class="campo-lista-empty">Sin datos</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subhead">Clasificación de Posición</div>
+        <div class="field-ro"><label>Tipo de Clasificación: <span class="req">*</span></label>
+          <select class="field-select" id="fTipoClasif">
+            <option value="">Seleccionar</option>
+            <option>Fiscalizable</option>
+            <option>No Fiscalizable</option>
+            <option>De Confianza</option>
+          </select>
+        </div>
+        <div class="field-ro"><label>Sustento de la Clasificación: <span class="req">*</span></label>
+          <textarea class="field-textarea" id="fSustentoClasif" placeholder="Describa el sustento de la clasificación"></textarea>
+          <div class="char-count">Quedan 250 caracteres</div>
+        </div>
+
+        <div class="subhead">Impacto</div>
+        <div class="row-right">
+          <span id="impactoMsg" style="font-size:11.5px;color:#999;margin-right:10px;"></span>
+          <button class="add-btn" id="btnAgregarImpacto">+ Agregar</button>
+        </div>
+        <table class="mini-table">
+          <thead><tr><th>Indicador</th><th>Monto o cantidad anual</th><th style="width:30px;"></th></tr></thead>
+          <tbody id="impactoBody"><tr><td colspan="3" style="text-align:center;color:#999;">Sin datos</td></tr></tbody>
+        </table>
+        <div class="siguiente-row"><button class="btn btn-outline-red btn-siguiente" data-next="3">Siguiente →</button></div>
+      </div>
+
+      <!-- TAB 3 -->
+      <div class="tab-panel" id="tabPanel3">
+        <h3>3. Educación</h3>
+        <div class="subhead">Educación Principal</div>
+        <div class="field-ro"><label>Nivel Educativo: <span class="req">*</span></label>
+          <select class="field-select" id="fNivelEducativo">
+            <option value="">Seleccionar</option>
+            <option>Bachiller</option>
+            <option>Doctorado</option>
+            <option>Especialización</option>
+            <option>Maestría</option>
+            <option>Educación Secundaria</option>
+            <option>Técnico</option>
+            <option>Tecnólogo</option>
+            <option>Universitario</option>
+          </select>
+        </div>
+        <div class="field-ro"><label>Carreras: <span class="req">*</span></label>
+          <textarea class="field-textarea" id="fCarreras" placeholder="Especifique las carreras requeridas"></textarea>
+          <div class="char-count">Quedan 3000 caracteres</div>
+        </div>
+
+        <div class="subhead">Estudios Complementarios</div>
+        <div class="row-right"><button class="add-btn" id="btnAgregarEstudio">+ Agregar</button></div>
+        <table class="mini-table"><thead><tr><th>Descripción</th><th style="width:30px;"></th></tr></thead>
+          <tbody id="estudiosBody"><tr><td colspan="2" style="text-align:center;color:#999;">Sin datos</td></tr></tbody></table>
+
+        <div class="subhead">Conocimientos Deseados</div>
+        <div class="row-right"><button class="add-btn" id="btnAgregarConocimiento">+ Agregar</button></div>
+        <table class="mini-table">
+          <thead><tr><th>Tecnología de la Información / Herramientas</th><th style="width:130px;">¿Qué nivel requiere?</th><th>¿Para qué es necesario?</th><th style="width:30px;"></th></tr></thead>
+          <tbody id="conocimientosBody"><tr><td colspan="4" style="text-align:center;color:#999;">Sin datos</td></tr></tbody>
+        </table>
+        <div class="siguiente-row"><button class="btn btn-outline-red btn-siguiente" data-next="4">Siguiente →</button></div>
+      </div>
+
+      <!-- TAB 4 -->
+      <div class="tab-panel" id="tabPanel4">
+        <h3>4. Factores de Riesgo</h3>
+        <div class="subhead">Actividades de Riesgo</div>
+        <div class="risk-cols">
+          <table class="mini-table">
+            <thead><tr><th>Tipo de Actividad</th><th>Aplica</th><th>Frecuencia</th></tr></thead>
+            <tbody>
+              <tr><td>Trabajos en altura (mayor a 1.8 m. de altura)</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Cargar equipos o elementos que pesen más de 5 Kg.</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Izamiento de equipos, herramientas, etc.</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Viajes a la selva profunda</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Visita o viajes a lugares a más de 2.500 msnm</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Exposición a radiación solar o calor extremo</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Riesgo de contacto eléctrico</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+            </tbody>
+          </table>
+          <table class="mini-table">
+            <thead><tr><th>Tipo de Actividad</th><th>Aplica</th><th>Frecuencia</th></tr></thead>
+            <tbody>
+              <tr><td>Trabajos en espacios confinados</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Manejo de vehículo de flota</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Exposición a picadura de zancudos o contacto con roedores</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Traslado fuera del lugar de trabajo</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Traslado fuera del lugar de trabajo (con vehículo de flota)</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Traslado fuera del lugar de trabajo (con vehículo particular)</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+              <tr><td>Prueba de Factor de riesgo</td><td><span class="badge-no">No</span></td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="siguiente-row"><button class="btn btn-outline-red btn-siguiente" data-next="5">Siguiente →</button></div>
+      </div>
+
+      <!-- TAB 5 -->
+      <div class="tab-panel" id="tabPanel5">
+        <h3>5. Información Complementaria</h3>
+        <div class="field-ro"><label>Contexto:</label>
+          <textarea class="field-textarea" id="fContexto" style="min-height:100px;" placeholder="Proporcione información adicional relevante para la posición..."></textarea>
+          <div class="char-count">Quedan 3000 caracteres</div>
+        </div>
+        <div class="siguiente-row"><button class="btn btn-enviar" id="btnEnviarSolicitud">📨 Enviar Solicitud</button></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-guardar" id="btnGuardarBorrador">💾 Guardar Borrador</button>
+
+  <button class="msg-pill" id="msgPill">⚠️ <span id="msgPillCount">0 errores</span></button>
+  <div class="msg-panel" id="msgPanel">
+    <div class="msg-panel-head">
+      <strong>Mensajes</strong>
+      <div class="msg-actions">
+        <span class="msg-clear" id="msgClear">Limpiar todo</span>
+        <button class="msg-close" id="msgClose">✕</button>
+      </div>
+    </div>
+    <div class="msg-list" id="msgList"></div>
+  </div>
+</div>
+
+<script>
+  // ---- Funciones Principales: agregar/eliminar filas, máx. 5, 300 caracteres, suma 100% ----
+  const MAX_FUNCIONES = 5;
+  const fFuncionesBody = document.getElementById('fFuncionesBody');
+  const btnAgregarFuncion = document.getElementById('btnAgregarFuncion');
+  const funcionesMsg = document.getElementById('funcionesMsg');
+  const funcionesTotal = document.getElementById('funcionesTotal');
+
+  function contarFilasFunciones() {
+    return fFuncionesBody.querySelectorAll('tr[data-fila]').length;
+  }
+
+  function renumerarFunciones() {
+    fFuncionesBody.querySelectorAll('tr[data-fila] td:first-child').forEach((td, i) => td.textContent = i + 1);
+  }
+
+  function recalcularTotalFunciones() {
+    let total = 0;
+    fFuncionesBody.querySelectorAll('.pct-input').forEach(inp => total += parseFloat(inp.value) || 0);
+    funcionesTotal.textContent = total + '%';
+    funcionesTotal.className = total === 100 ? 'total-ok' : 'total-bad';
+  }
+
+  function limitarPorcentaje(inputActual) {
+    let otros = 0;
+    fFuncionesBody.querySelectorAll('.pct-input').forEach(inp => {
+      if (inp !== inputActual) otros += parseFloat(inp.value) || 0;
+    });
+    const max = Math.max(0, 100 - otros);
+    let valor = parseFloat(inputActual.value) || 0;
+    if (valor > max) inputActual.value = max;
+    recalcularTotalFunciones();
+  }
+
+  function actualizarEstadoAgregar() {
+    const n = contarFilasFunciones();
+    btnAgregarFuncion.disabled = n >= MAX_FUNCIONES;
+    funcionesMsg.textContent = n >= MAX_FUNCIONES ? 'Ya registraste las 5 funciones permitidas' : '';
+  }
+
+  function crearFilaFuncion(que = '', para = '', pct = '') {
+    const placeholder = fFuncionesBody.querySelector('td[colspan]');
+    if (placeholder) placeholder.closest('tr').remove();
+
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-fila', '1');
+    tr.innerHTML = `
+      <td></td>
+      <td><input type="text" class="table-input" maxlength="300" value="${que}" placeholder="¿Qué hace?"></td>
+      <td><input type="text" class="table-input" maxlength="300" value="${para}" placeholder="¿Para qué lo hace?"></td>
+      <td><input type="number" class="table-input pct-input" min="0" max="100" value="${pct}" placeholder="%"></td>
+      <td><button type="button" class="btn-remove-row" title="Eliminar">✕</button></td>`;
+
+    tr.querySelector('.pct-input').oninput = (e) => limitarPorcentaje(e.target);
+    tr.querySelector('.btn-remove-row').onclick = () => {
+      tr.remove();
+      renumerarFunciones();
+      recalcularTotalFunciones();
+      actualizarEstadoAgregar();
+      if (contarFilasFunciones() === 0) mostrarSinDatosFunciones();
+    };
+
+    fFuncionesBody.appendChild(tr);
+    renumerarFunciones();
+    recalcularTotalFunciones();
+    actualizarEstadoAgregar();
+  }
+
+  function mostrarSinDatosFunciones() {
+    fFuncionesBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;">Sin datos</td></tr>';
+    recalcularTotalFunciones();
+    actualizarEstadoAgregar();
+  }
+
+  btnAgregarFuncion.onclick = () => {
+    if (contarFilasFunciones() < MAX_FUNCIONES) {
+      crearFilaFuncion();
+    } else {
+      funcionesMsg.style.color = '#B4001F';
+      funcionesMsg.textContent = 'Ya registraste las 5 funciones permitidas para esta posición';
+    }
+  };
+
+  // ---- Nivel de Autoridad: agregar campos de texto libres (sin límite) ----
+  function habilitarListaSimple(botonId, contenedorId, placeholder) {
+    const boton = document.getElementById(botonId);
+    const contenedor = document.getElementById(contenedorId);
+    boton.onclick = () => {
+      const vacio = contenedor.querySelector('.campo-lista-empty');
+      if (vacio) vacio.remove();
+      const fila = document.createElement('div');
+      fila.className = 'campo-lista-row';
+      fila.innerHTML = `<input type="text" placeholder="${placeholder}">
+        <button type="button" class="btn-remove-row" title="Eliminar">✕</button>`;
+      fila.querySelector('.btn-remove-row').onclick = () => {
+        fila.remove();
+        if (!contenedor.querySelector('.campo-lista-row')) {
+          contenedor.innerHTML = '<div class="campo-lista-empty">Sin datos</div>';
+        }
+      };
+      contenedor.appendChild(fila);
+    };
+  }
+  habilitarListaSimple('btnAgregarDecision', 'listaDecisiones', 'Describa la decisión');
+  habilitarListaSimple('btnAgregarRecomendacion', 'listaRecomendaciones', 'Describa la recomendación');
+
+  // ---- Impacto: agregar filas, máx. 5, Indicador + Monto ----
+  const MAX_IMPACTO = 5;
+  const impactoBody = document.getElementById('impactoBody');
+  const btnAgregarImpacto = document.getElementById('btnAgregarImpacto');
+  const impactoMsg = document.getElementById('impactoMsg');
+
+  function contarFilasImpacto() { return impactoBody.querySelectorAll('tr[data-fila]').length; }
+
+  function crearFilaImpacto() {
+    const placeholder = impactoBody.querySelector('td[colspan]');
+    if (placeholder) placeholder.closest('tr').remove();
+
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-fila', '1');
+    tr.innerHTML = `
+      <td><input type="text" class="table-input" placeholder="Indicador"></td>
+      <td><input type="text" class="table-input" placeholder="Monto o cantidad anual"></td>
+      <td><button type="button" class="btn-remove-row" title="Eliminar">✕</button></td>`;
+
+    tr.querySelector('.btn-remove-row').onclick = () => {
+      tr.remove();
+      btnAgregarImpacto.disabled = false;
+      impactoMsg.textContent = '';
+      if (contarFilasImpacto() === 0) {
+        impactoBody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#999;">Sin datos</td></tr>';
+      }
+    };
+    impactoBody.appendChild(tr);
+    if (contarFilasImpacto() >= MAX_IMPACTO) {
+      btnAgregarImpacto.disabled = true;
+      impactoMsg.textContent = 'Máximo 5 indicadores de impacto';
+    }
+  }
+
+  btnAgregarImpacto.onclick = () => {
+    if (contarFilasImpacto() < MAX_IMPACTO) crearFilaImpacto();
+  };
+
+  // ---- Supervisa a: Puesto (texto) + N° de colaboradores (cantidad) ----
+  const supervisaBody = document.getElementById('supervisaBody');
+  document.getElementById('btnAgregarSupervisa').onclick = () => {
+    const placeholder = supervisaBody.querySelector('td[colspan]');
+    if (placeholder) placeholder.closest('tr').remove();
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" class="table-input" placeholder="Ej: Analista SAP Proyectos"></td>
+      <td><input type="number" class="table-input" min="0" placeholder="N°"></td>
+      <td><button type="button" class="btn-remove-row" title="Eliminar">✕</button></td>`;
+    tr.querySelector('.btn-remove-row').onclick = () => {
+      tr.remove();
+      if (!supervisaBody.querySelector('tr')) {
+        supervisaBody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#999;">Sin datos</td></tr>';
+      }
+    };
+    supervisaBody.appendChild(tr);
+  };
+
+  // ---- Estudios Complementarios: campo de texto simple ----
+  const estudiosBody = document.getElementById('estudiosBody');
+  document.getElementById('btnAgregarEstudio').onclick = () => {
+    const placeholder = estudiosBody.querySelector('td[colspan]');
+    if (placeholder) placeholder.closest('tr').remove();
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" class="table-input" placeholder="Ej: Certificación PMP, Professional Scrum Master, etc."></td>
+      <td><button type="button" class="btn-remove-row" title="Eliminar">✕</button></td>`;
+    tr.querySelector('.btn-remove-row').onclick = () => {
+      tr.remove();
+      if (!estudiosBody.querySelector('tr')) {
+        estudiosBody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:#999;">Sin datos</td></tr>';
+      }
+    };
+    estudiosBody.appendChild(tr);
+  };
+
+  // ---- Conocimientos Deseados: Tecnología + Nivel requerido + Para qué es necesario (120 car.) ----
+  const conocimientosBody = document.getElementById('conocimientosBody');
+  document.getElementById('btnAgregarConocimiento').onclick = () => {
+    const placeholder = conocimientosBody.querySelector('td[colspan]');
+    if (placeholder) placeholder.closest('tr').remove();
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" class="table-input" placeholder="Ej: Paquetería Office, SAP FI SD o MM, etc."></td>
+      <td><select class="table-input">
+            <option>Seleccione...</option>
+            <option>Básico</option>
+            <option>Intermedio</option>
+            <option>Avanzado</option>
+          </select></td>
+      <td>
+        <textarea class="table-input" maxlength="120" rows="2" placeholder="Describa para qué es necesario este conocimiento..."></textarea>
+        <div class="char-count" style="margin-top:2px;">Quedan 120 caracteres</div>
+      </td>
+      <td><button type="button" class="btn-remove-row" title="Eliminar">✕</button></td>`;
+
+    const textarea = tr.querySelector('textarea');
+    const contador = tr.querySelector('.char-count');
+    textarea.oninput = () => { contador.textContent = 'Quedan ' + (120 - textarea.value.length) + ' caracteres'; };
+
+    tr.querySelector('.btn-remove-row').onclick = () => {
+      tr.remove();
+      if (!conocimientosBody.querySelector('tr')) {
+        conocimientosBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#999;">Sin datos</td></tr>';
+      }
+    };
+    conocimientosBody.appendChild(tr);
+  };
+
+  function irATab(n) {
+    document.querySelectorAll('.detail-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === String(n)));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('show', p.id === 'tabPanel' + n));
+  }
+  document.querySelectorAll('.detail-tab').forEach(t => t.onclick = () => irATab(t.dataset.tab));
+  document.querySelectorAll('.btn-siguiente').forEach(b => {
+    b.onclick = () => {
+      const tabActual = document.querySelector('.tab-panel.show').id.replace('tabPanel', '');
+      if (validarTab(tabActual)) irATab(b.dataset.next);
+    };
+  });
+
+  // Datos del descriptivo de referencia (mismos usados en la vista comprimida)
+  const datosReferencia = {
+    respPrincipal: 'prueba de modificaciones',
+    funcion: { n: 1, que: 'p', para: 'p', total: '100%' },
+    reportaJerar: '700 - Jefe SAP Proyectos',
+    reportaFunc: '801 - Analista SAP Proyectos',
+    tipoClasif: 'Fiscalizable',
+    sustentoClasif: 'prueba',
+    nivelEducativo: 'Especialización',
+    carreras: 'pruebas de carreras'
+  };
+
+  function cargarDatosSolicitud(modo, nombreActual) {
+    const usar = (modo === 'copiar' || modo === 'actualizar') ? datosReferencia : null;
+
+    document.getElementById('fResponsabilidad').value = usar ? usar.respPrincipal : '';
+    document.getElementById('fReportaJerar').value = usar ? usar.reportaJerar : '';
+    document.getElementById('fReportaFunc').value = usar ? usar.reportaFunc : '';
+    document.getElementById('fTipoClasif').value = usar ? usar.tipoClasif : '';
+    document.getElementById('fSustentoClasif').value = usar ? usar.sustentoClasif : '';
+    document.getElementById('fNivelEducativo').value = usar ? usar.nivelEducativo : '';
+    document.getElementById('fCarreras').value = usar ? usar.carreras : '';
+    document.getElementById('fContexto').value = '';
+    document.getElementById('fNombrePuesto').value = modo === 'actualizar' ? (nombreActual || '') : '';
+
+    const fb = document.getElementById('fFuncionesBody');
+    if (usar) {
+      mostrarSinDatosFunciones();
+      crearFilaFuncion(usar.funcion.que, usar.funcion.para, usar.funcion.total.replace('%', ''));
+    } else {
+      mostrarSinDatosFunciones();
+    }
+
+    irATab(1);
+    document.getElementById('msgPill').classList.remove('show');
+    document.getElementById('msgPanel').classList.remove('show');
+  }
+
+  // ---- Validación de campos obligatorios + panel de Mensajes ----
+  const CAMPOS_REQUERIDOS = [
+    { id: 'fSustentoPrincipal', tab: '1', msg: 'El sustento de la solicitud es obligatorio' },
+    { id: 'fNombrePuesto', tab: '1', msg: 'El nombre del puesto es obligatorio' },
+    { id: 'fResponsabilidad', tab: '2', msg: 'La responsabilidad principal es obligatoria' },
+    { id: 'fReportaJerar', tab: '2', msg: 'Debes indicar a quién reporta jerárquicamente la posición' },
+    { id: 'fReportaFunc', tab: '2', msg: 'Debes indicar a quién reporta funcionalmente la posición' },
+    { id: 'fTipoClasif', tab: '2', msg: 'Selecciona el tipo de clasificación de la posición' },
+    { id: 'fSustentoClasif', tab: '2', msg: 'El sustento de la clasificación es obligatorio' },
+    { id: 'fNivelEducativo', tab: '3', msg: 'Selecciona el nivel educativo requerido' },
+    { id: 'fCarreras', tab: '3', msg: 'Indica las carreras requeridas para la posición' }
+  ];
+
+  function obtenerErrores(soloTab) {
+    return CAMPOS_REQUERIDOS
+      .filter(c => soloTab === undefined ? true : c.tab === soloTab)
+      .filter(c => !document.getElementById(c.id).value.trim());
+  }
+
+  // Valida las columnas "¿Qué hace?" y "¿Para qué lo hace?" de cada función agregada
+  function validarFuncionesFila() {
+    const errores = [];
+    fFuncionesBody.querySelectorAll('tr[data-fila]').forEach((tr, idx) => {
+      const inputs = tr.querySelectorAll('.table-input');
+      const que = inputs[0], para = inputs[1];
+      if (que && !que.value.trim()) errores.push({ tab: '2', el: que, msg: `Completa "¿Qué hace?" en la función N°${idx + 1}` });
+      if (para && !para.value.trim()) errores.push({ tab: '2', el: para, msg: `Completa "¿Para qué lo hace?" en la función N°${idx + 1}` });
+    });
+    return errores;
+  }
+
+  function mostrarErrores(lista) {
+    const msgList = document.getElementById('msgList');
+    const msgPill = document.getElementById('msgPill');
+    const msgPanel = document.getElementById('msgPanel');
+
+    document.querySelectorAll('.invalid').forEach(e => e.classList.remove('invalid'));
+    lista.forEach(c => { const el = c.el || document.getElementById(c.id); if (el) el.classList.add('invalid'); });
+
+    if (lista.length === 0) {
+      msgPill.classList.remove('show');
+      msgPanel.classList.remove('show');
+      return;
+    }
+    const primero = lista[0].el || document.getElementById(lista[0].id);
+    if (primero) primero.focus();
+
+    msgList.innerHTML = lista.map(c => `<div class="msg-item">
+      <span class="msg-x">✕</span><span>${c.msg}</span></div>`).join('');
+
+    msgList.querySelectorAll('.msg-item').forEach((nodo, i) => {
+      nodo.onclick = () => {
+        const c = lista[i];
+        if (c.tab) irATab(c.tab);
+        const el = c.el || (c.id ? document.getElementById(c.id) : null);
+        if (el) el.focus();
+      };
+    });
+
+    document.getElementById('msgPillCount').textContent = lista.length + (lista.length === 1 ? ' error' : ' errores');
+    msgPill.classList.add('show');
+  }
+  ['input', 'change'].forEach(ev => document.addEventListener(ev, e => e.target.classList && e.target.classList.remove('invalid')));
+
+  document.getElementById('msgPill').onclick = () => document.getElementById('msgPanel').classList.toggle('show');
+  document.getElementById('msgClose').onclick = () => document.getElementById('msgPanel').classList.remove('show');
+  document.getElementById('msgClear').onclick = () => {
+    document.getElementById('msgPill').classList.remove('show');
+    document.getElementById('msgPanel').classList.remove('show');
+  };
+
+  function validarTab(n) {
+    let errores = obtenerErrores(String(n));
+    if (String(n) === '2') errores = errores.concat(validarFuncionesFila());
+    mostrarErrores(errores);
+    return errores.length === 0;
+  }
+
+  document.getElementById('btnEnviarSolicitud').onclick = () => {
+    const todos = obtenerErrores().concat(validarFuncionesFila());
+    mostrarErrores(todos);
+    if (todos.length) {
+      if (todos[0].tab) irATab(todos[0].tab);
+      (todos[0].el || document.getElementById(todos[0].id)).focus();
+      return;
+    }
+    const id = 'SOL-' + '202609-' + String(contadorSolicitudes++).padStart(4, '0');
+    const hoy = new Date().toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const tr = document.createElement('tr');
+    tr.className = 'fila-nueva';
+    tr.innerHTML = `<td>${id}</td><td>${document.getElementById('motivoTexto').textContent}</td><td>Finanzas</td>
+      <td>SAP y Procesos Financieros</td><td>${document.getElementById('fNombrePuesto').value}</td><td>OMAR ALBERTO ZAMUDIO</td>
+      <td class="estado">Pendiente Aprobación Nivel 1</td><td>${hoy}</td><td class="chev">›</td>`;
+    document.querySelector('main table tbody').prepend(tr);
+    const h2 = document.querySelector('.section-head h2');
+    h2.textContent = h2.textContent.replace(/\((\d+)\)/, (m, n) => '(' + (parseInt(n) + 1) + ')');
+    document.getElementById('exitoId').textContent = id;
+    document.getElementById('formBody').style.display = 'none';
+    document.querySelector('.btn-guardar').style.display = 'none';
+    document.getElementById('msgPill').classList.remove('show');
+    document.getElementById('exitoSolicitud').classList.add('show');
+  };
+</script>
+
+<script>
+  function abrirNuevaSolicitud({ modo, nombrePosicion, codigoPosicion }) {
+    document.getElementById('overlay').classList.remove('show');
+    document.getElementById('overlayCopiar').classList.remove('show');
+    document.getElementById('overlayActualizar').classList.remove('show');
+
+    const posLabel = document.getElementById('posLabel');
+    const posValueBox = document.getElementById('posValueBox');
+    const motivoTexto = document.getElementById('motivoTexto');
+
+    if (modo === 'cero') {
+      posLabel.innerHTML = 'Posición: <span class="req">*</span>';
+      posValueBox.textContent = 'Nueva Posición';
+      motivoTexto.textContent = 'Nueva Posición';
+    } else if (modo === 'actualizar') {
+      posLabel.innerHTML = 'Posición: <span class="req">*</span>';
+      posValueBox.textContent = (codigoPosicion ? codigoPosicion + ' - ' : '') + (nombrePosicion || '');
+      motivoTexto.textContent = 'Actualización de Descriptivo';
+    } else {
+      posLabel.innerHTML = 'Posición de Referencia: <span class="req">*</span>';
+      posValueBox.textContent = nombrePosicion || 'Nombre de la posición elegida';
+      motivoTexto.textContent = 'Nueva Posición';
+    }
+
+    document.getElementById('exitoSolicitud').classList.remove('show');
+    document.getElementById('formBody').style.display = '';
+    document.querySelector('.btn-guardar').style.display = '';
+    window._modoActual = modo;
+    document.getElementById('pageNuevaSolicitud').classList.add('show');
+    cargarDatosSolicitud(modo, nombrePosicion);
+  }
+
+  // "Regresar" vuelve al paso anterior según la ruta elegida
+  document.getElementById('btnRegresarSolicitud').onclick = () => {
+    document.getElementById('pageNuevaSolicitud').classList.remove('show');
+    const destino = { cero: 'overlay', copiar: 'overlayCopiar', actualizar: 'overlayActualizar' }[window._modoActual] || 'overlay';
+    document.getElementById(destino).classList.add('show');
+  };
+
+  document.getElementById('btnGuardarBorrador').onclick = () => mostrarToast('Borrador guardado');
+
+  let contadorSolicitudes = 23;
+  document.getElementById('btnVolverMonitor').onclick = () => {
+    document.getElementById('pageNuevaSolicitud').classList.remove('show');
+  };
+</script>
+
+<div class="toast" id="toast"></div>
+</body>
+</html>
