@@ -1922,28 +1922,29 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     const f = window._funcionActual;
     if (window._modoActual !== 'actualizar' || !f) { cont.classList.remove('show'); cont.innerHTML = ''; return; }
 
-    const total = f.posiciones.length;
-    const conDesc = f.posiciones.filter(p => p.desc).length;
-    const filas = f.posiciones.map(p => {
+    const incl = f.posiciones.filter(p => (window._posSel || []).includes(p.cod));
+    const total = incl.length;
+    const conDesc = incl.filter(p => p.desc).length;
+    const filas = incl.map(p => {
       const actual = (window._posSel || []).includes(p.cod);
       return `<li class="fxr-row${actual ? ' fxr-actual' : ''}">
         <span class="fxr-cod">${p.cod}</span>
         <span class="fxr-nombre">${p.nombre}${p.nueva ? '<span class="fxr-tag fxr-tag-nueva">Nueva</span>' : ''}</span>
         <span class="fxr-colab">${p.colab}</span>
         <span>${p.desc ? '<span class="badge-si">Sí</span>' : '<span class="badge-no">No</span>'}</span>
-        <span class="fxr-estado">${actual ? (p.desc ? '<span class="fxr-tag">Actualizada en esta solicitud</span>' : '<span class="fxr-tag fxr-tag-crea">Creando descriptivo</span>') : '<span class="fxr-dash">—</span>'}</span>
+        <span class="fxr-estado">${actual ? (p.desc ? '<span class="fxr-tag">Actualizando Descriptivo en esta solicitud</span>' : '<span class="fxr-tag fxr-tag-crea">Creando descriptivo</span>') : '<span class="fxr-dash">—</span>'}</span>
       </li>`;
     }).join('');
 
     cont.innerHTML = `
       <div class="fxr-head">
-        <h3>Posiciones de la función ${f.codigo}: ${f.nombre}</h3>
-        <p>Estas son todas las posiciones asociadas a la función. ${(window._posSel || []).length > 1 ? 'Las posiciones ' + window._posSel.join(', ') + ' se incluyeron' : 'La posición ' + window._posicionActual + ' se incluyó'} en esta solicitud de actualización.</p>
+        <h3>Posiciones de esta solicitud · función ${f.codigo}: ${f.nombre}</h3>
+        <p>Estas son las posiciones incluidas en tu solicitud: las que tienen descriptivo se actualizarán y las que no, se crearán.</p>
       </div>
       <div class="fxr-stats">
         <span class="fxr-stat"><b>${total}</b> posiciones</span>
-        <span class="fxr-stat"><b>${conDesc}</b> con descriptivo</span>
-        <span class="fxr-stat"><b>${total - conDesc}</b> sin descriptivo</span>
+        <span class="fxr-stat"><b>${conDesc}</b> a actualizar</span>
+        <span class="fxr-stat"><b>${total - conDesc}</b> a crear</span>
       </div>
       <ul class="fxr-list">
         <li class="fxr-row fxr-colhead"><span>Código</span><span>Posición</span><span>Colaborador</span><span>Posee descriptivo</span><span>Estado</span></li>
