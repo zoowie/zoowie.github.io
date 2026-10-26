@@ -696,6 +696,41 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
   .dt-t{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:12px;}
   .dt-t th{text-align:left;padding:8px;border-bottom:1px solid #C9D1DA;font-size:12px;} .dt-t td{padding:8px;border-bottom:1px solid #EEE;vertical-align:top;}
   .dt-ul{margin:0 0 12px;padding-left:18px;font-size:13px;} .dt-sin{color:#999;font-size:12.5px;margin-bottom:12px;}
+
+  /* ---- Box: aplicar la actualización a otras posiciones (masiva) ---- */
+  .mx-overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);display:none;align-items:center;justify-content:center;z-index:110;padding:16px;}
+  .mx-overlay.show{display:flex;}
+  .mx-box{background:#fff;border-radius:16px;width:100%;max-width:700px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.3);overflow:hidden;}
+  .mx-head{display:flex;gap:14px;padding:26px 28px 14px;}
+  .mx-ic{flex:none;width:36px;height:36px;border-radius:50%;background:#1B6FC9;color:#fff;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;}
+  .mx-head h4{margin:0 0 6px;font-size:19px;font-weight:700;color:#222;}
+  .mx-head p{margin:0;font-size:13.5px;color:#666;line-height:1.45;}
+  .mx-tools{display:flex;justify-content:space-between;align-items:center;padding:8px 28px;font-size:13.5px;}
+  .mx-all{display:flex;align-items:center;gap:12px;font-weight:700;cursor:pointer;color:#222;}
+  .mx-tools .mx-av{color:#777;}
+  .mx-list{list-style:none;margin:4px 28px 18px;padding:0;border:1px solid #DADADA;border-radius:10px;overflow-y:auto;min-height:60px;}
+  .mx-row{display:flex;align-items:center;gap:14px;padding:11px 16px;border-bottom:1px solid #E8E8E8;cursor:pointer;}
+  .mx-row:last-child{border-bottom:0;}
+  .mx-row:hover{background:#FAFAFA;}
+  .mx-row.mx-actual{background:#FFF6DC;cursor:default;}
+  .mx-row input{width:16px;height:16px;accent-color:var(--red);flex:none;margin:0;}
+  .mx-info{flex:1;min-width:0;}
+  .mx-l1{font-size:14.5px;color:#222;}
+  .mx-l1 b{margin-right:4px;}
+  .mx-l2{font-size:12.5px;color:#777;margin-top:2px;}
+  .mx-tag{display:inline-block;font-size:11px;font-weight:700;border-radius:10px;padding:1px 9px;margin-left:6px;}
+  .mx-tag-act{background:#FCE3A0;color:#8A5A00;}
+  .mx-tag-nueva{background:#E3EEFB;color:#1B6FC9;}
+  .mx-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 28px;border-top:1px solid #E5E5E5;}
+  .mx-count{font-size:13px;color:#666;}
+  .mx-btns{display:flex;gap:12px;}
+  .mx-btn{border-radius:24px;padding:11px 26px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit;border:1px solid #CFCFCF;background:#fff;color:#222;}
+  .mx-btn:hover{background:#F5F5F5;}
+  .mx-btn.mx-ok{background:var(--red);border-color:var(--red);color:#fff;}
+  .mx-btn.mx-ok:hover{filter:brightness(.93);}
+  .mx-btn:focus-visible,.mx-row input:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
+  @media(max-width:560px){.mx-foot{flex-direction:column;align-items:stretch}.mx-btns{justify-content:flex-end}}
+.fxr-tag-crea{color:#B25E00;background:#FFF0DC;}
 .lp-demo{display:none!important}
 </style>
 </head>
@@ -939,7 +974,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     </div>
 
     <div class="actualizar-body">
-      <p class="fx-intro">Selecciona una función y una o varias posiciones de la misma función (actualización masiva) para actualizar su perfil de puesto.</p>
+      <p class="fx-intro">Selecciona una función y la posición cuyo descriptivo deseas actualizar. Al enviar la solicitud podrás extenderla a otras posiciones de la misma función.</p>
       <div id="funcAcordeon"></div>
     </div>
 
@@ -983,7 +1018,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       const n = f.posiciones.length;
       const filas = f.posiciones.map(p => `
         <tr data-cod="${p.cod}">
-          <td><input type="checkbox" value="${p.cod}" aria-label="Seleccionar posición ${p.cod}"></td>
+          <td><input type="radio" name="posAct" value="${p.cod}" aria-label="Seleccionar posición ${p.cod}"></td>
           <td class="fx-cod">${p.cod}</td>
           <td>${p.nombre}${p.nueva ? '<span class="tag-nueva">Nueva</span>' : ''}</td>
           <td>${p.colab}</td>
@@ -1000,7 +1035,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
         <div class="fx-body" id="fx-body-${f.codigo}">
           <div class="fx-body-inner">
             <table class="fx-table">
-              <thead><tr><th><input type="checkbox" class="fx-all" aria-label="Seleccionar todas las posiciones de ${f.codigo}"></th><th>Código Posición</th><th>Posición</th><th>Colaborador</th><th>Posee Descriptivo</th></tr></thead>
+              <thead><tr><th></th><th>Código Posición</th><th>Posición</th><th>Colaborador</th><th>Posee Descriptivo</th></tr></thead>
               <tbody>${filas}</tbody>
             </table>
           </div>
@@ -1014,7 +1049,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     funcAcordeon.querySelectorAll('tbody tr').forEach(tr => {
       const cb = tr.querySelector('input');
       cb.onchange = () => alCambiarSel(tr.closest('.fx-item').dataset.func);
-      tr.onclick = (e) => { if (e.target !== cb) { cb.checked = !cb.checked; cb.onchange(); } };
+      tr.onclick = (e) => { if (e.target !== cb) { cb.checked = true; cb.onchange(); } };
     });
     funcAcordeon.querySelectorAll('.fx-all').forEach(all => {
       all.onchange = () => { const it = all.closest('.fx-item'); it.querySelectorAll('tbody input').forEach(i => { i.checked = all.checked; }); alCambiarSel(it.dataset.func); };
@@ -1041,10 +1076,10 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     const marcadas = new Set(selAct.map(p => p.cod));
     funcAcordeon.querySelectorAll('tbody tr').forEach(t => t.classList.toggle('row-sel', marcadas.has(t.dataset.cod)));
     funcAcordeon.querySelectorAll('.fx-item').forEach(it => {
-      const n = it.querySelectorAll('tbody input:checked').length, tot = it.querySelectorAll('tbody input').length;
+      const n = it.querySelectorAll('tbody input:checked').length;
       it.classList.toggle('has-sel', n > 0);
-      it.querySelector('.fx-sel-tag').textContent = n === 0 ? '' : n === 1 ? 'Posición ' + selAct[0].cod + ' seleccionada' : n + ' posiciones seleccionadas';
-      const all = it.querySelector('.fx-all'); all.checked = n === tot; all.indeterminate = n > 0 && n < tot;
+      it.querySelector('.fx-sel-tag').textContent = n === 0 ? '' : 'Posición ' + selAct[0].cod + ' seleccionada';
+      
     });
     btnContinuarActualizar.disabled = selAct.length === 0;
     const sinDesc = selAct.filter(p => !p.desc).length, f = selAct[0] && selAct[0].funcion;
@@ -1828,7 +1863,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       return;
     }
     // Nueva Posición (desde cero / copiar modelo) pide confirmación; Actualización registra directo
-    if (window._modoActual === 'actualizar') registrarSolicitud();
+    if (window._modoActual === 'actualizar') abrirSeleccionMasiva(registrarSolicitud);
     else confirmarEnvio(registrarSolicitud);
   };
 
@@ -1896,7 +1931,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
         <span class="fxr-nombre">${p.nombre}${p.nueva ? '<span class="fxr-tag fxr-tag-nueva">Nueva</span>' : ''}</span>
         <span class="fxr-colab">${p.colab}</span>
         <span>${p.desc ? '<span class="badge-si">Sí</span>' : '<span class="badge-no">No</span>'}</span>
-        <span class="fxr-estado">${actual ? '<span class="fxr-tag">Actualizada en esta solicitud</span>' : '<span class="fxr-dash">—</span>'}</span>
+        <span class="fxr-estado">${actual ? (p.desc ? '<span class="fxr-tag">Actualizada en esta solicitud</span>' : '<span class="fxr-tag fxr-tag-crea">Creando descriptivo</span>') : '<span class="fxr-dash">—</span>'}</span>
       </li>`;
     }).join('');
 
@@ -1952,6 +1987,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     window._refPosicion = nombrePosicion ? { cod: codigoPosicion || '', nombre: nombrePosicion } : null;
     window._funcionRef = funcion || null;
     window._posObjs = modo === 'actualizar' ? (posiciones || null) : null;
+    window._posBase = window._posObjs ? window._posObjs[0] : null;
     window._posSel = window._posObjs ? window._posObjs.map(q => q.cod) : (window._posicionActual ? [window._posicionActual] : []);
     document.getElementById('pageNuevaSolicitud').classList.add('show');
     cargarDatosSolicitud(modo, nombrePosicion, conDescriptivo);
@@ -2433,6 +2469,16 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     mostrarInicio(true);
   })();
 <\/script>
+<div class="mx-overlay" id="mxOverlay" role="dialog" aria-modal="true" aria-labelledby="mxTitulo">
+  <div class="mx-box">
+    <div class="mx-head"><span class="mx-ic" aria-hidden="true">i</span>
+      <div><h4 id="mxTitulo">¿A qué otras posiciones deseas aplicar la actualización?</h4><p id="mxSub"></p></div></div>
+    <div class="mx-tools"><label class="mx-all"><input type="checkbox" id="mxAll" style="width:16px;height:16px;accent-color:var(--red);margin:0"> Seleccionar todas</label><span class="mx-av" id="mxAv"></span></div>
+    <ul class="mx-list" id="mxList"></ul>
+    <div class="mx-foot"><span class="mx-count" id="mxCount"></span>
+      <div class="mx-btns"><button type="button" class="mx-btn" id="mxCancel">Cancelar</button><button type="button" class="mx-btn mx-ok" id="mxOk">Enviar solicitud</button></div></div>
+  </div>
+</div>
 <div class="confirm-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitulo">
   <div class="confirm-box">
     <div class="confirm-head"><span class="confirm-ic" aria-hidden="true">?</span><h4 id="confirmTitulo">Confirmación</h4></div>
@@ -2444,6 +2490,55 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<script>
+  // Al enviar una Actualización de Descriptivo: elegir otras posiciones de la misma función (opcional)
+  function abrirSeleccionMasiva(done) {
+    const f = window._funcionActual, base = window._posBase;
+    const otras = f && base ? f.posiciones.filter(p => p.cod !== base.cod) : [];
+    if (!otras.length) { done(); return; }
+    const $m = id => document.getElementById(id);
+    const ov = $m('mxOverlay'), list = $m('mxList'), all = $m('mxAll'), previo = document.activeElement;
+    $m('mxSub').textContent = 'Solo se listan las posiciones de la función ' + f.codigo + ': ' + f.nombre + '. La posición ' + base.cod + ' ya está incluida. Es opcional: puedes enviar solo la actual.';
+    $m('mxAv').textContent = otras.length + (otras.length === 1 ? ' disponible' : ' disponibles');
+    list.innerHTML = f.posiciones.map(p => {
+      const act = p.cod === base.cod;
+      return `<li class="mx-row${act ? ' mx-actual' : ''}" data-cod="${p.cod}">
+        <input type="checkbox" value="${p.cod}" ${act ? 'checked disabled' : ''} aria-label="Aplicar también a la posición ${p.cod}">
+        <div class="mx-info"><div class="mx-l1"><b>${p.cod}</b> ${p.nombre}${act ? '<span class="mx-tag mx-tag-act">Esta solicitud</span>' : ''}${p.nueva ? '<span class="mx-tag mx-tag-nueva">Nueva</span>' : ''}</div>
+          <div class="mx-l2">${p.colab} · ${p.desc ? 'Con descriptivo' : 'Sin descriptivo'}</div></div>
+        <span>${p.desc ? '<span class="badge-si">Sí</span>' : '<span class="badge-no">No</span>'}</span></li>`;
+    }).join('');
+    const checks = () => [...list.querySelectorAll('input:not(:disabled)')];
+    function refrescar() {
+      const n = checks().filter(c => c.checked).length;
+      all.checked = n === otras.length; all.indeterminate = n > 0 && n < otras.length;
+      $m('mxCount').textContent = (n + 1) + (n + 1 === 1 ? ' posición a actualizar' : ' posiciones a actualizar');
+    }
+    list.querySelectorAll('.mx-row:not(.mx-actual)').forEach(r => {
+      const cb = r.querySelector('input');
+      cb.onchange = refrescar;
+      r.onclick = e => { if (e.target !== cb) { cb.checked = !cb.checked; refrescar(); } };
+    });
+    all.onchange = () => { checks().forEach(c => { c.checked = all.checked; }); refrescar(); };
+    function cerrar() { ov.classList.remove('show'); document.removeEventListener('keydown', onKey); if (previo && previo.focus) previo.focus(); }
+    function onKey(e) { if (e.key === 'Escape') cerrar(); }
+    $m('mxCancel').onclick = cerrar;
+    ov.onclick = e => { if (e.target === ov) cerrar(); };
+    $m('mxOk').onclick = () => {
+      const marcadas = checks().filter(c => c.checked).map(c => c.value);
+      const objs = f.posiciones.filter(p => p.cod === base.cod || marcadas.includes(p.cod)).map(({ cod, nombre, colab, desc }) => ({ cod, nombre, colab, desc }));
+      window._posObjs = objs; window._posSel = objs.map(q => q.cod);
+      if (objs.length > 1) {
+        document.getElementById('motivoTexto').textContent = 'Actualización de Descriptivo (masiva)';
+        document.getElementById('posLabel').innerHTML = 'Posiciones: <span class="req">*</span>';
+        document.getElementById('posValueBox').textContent = objs.length + ' posiciones (' + objs.map(q => q.cod).join(', ') + ') · ' + f.codigo + ': ' + f.nombre;
+      }
+      cerrar(); done();
+    };
+    document.addEventListener('keydown', onKey);
+    refrescar(); ov.classList.add('show'); $m('mxOk').focus();
+  }
+<\/script>
 <script>(function(){var b=document.getElementById('exitPortal');if(!b)return;var go=function(){parent.postMessage({tehExit:true},'*')};b.onclick=go;b.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}})();<\/script>
 </body>
 </html>
