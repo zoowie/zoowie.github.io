@@ -89,6 +89,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
 .wm{display:flex;height:24px;border-radius:8px;overflow:hidden;background:var(--line);margin:8px 0 12px}.wm span{display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700}
 .sp2{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start}@media (max-width:900px){.sp2{grid-template-columns:1fr}}.ck .okc{color:var(--good);font-weight:700}.lnk.rd{color:var(--claro)}
 #la{border-color:var(--claro);padding:12px;margin:6px 0 16px;font-size:15px}.dpinfo{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;margin:16px 0}.dpinfo b{display:block;margin-bottom:4px}#descApp{display:none;position:fixed;inset:0;z-index:60;background:#fff}body.desc #descApp{display:block}body.desc #login,body.desc .shell{display:none}#descApp iframe{width:100%;height:100%;border:0;display:block}
+#burger{display:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;width:40px;height:40px;font-size:20px;line-height:1;cursor:pointer;margin-right:10px;flex:none}.tl{display:flex;align-items:center;min-width:0}@media (max-width:900px){#burger{display:inline-grid;place-items:center}aside{display:flex!important;position:fixed;top:0;bottom:0;left:0;z-index:70;width:min(84vw,310px);overflow-y:auto;transform:translateX(-102%);transition:transform .22s ease;box-shadow:none;padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}body.navopen aside{transform:none;box-shadow:0 0 40px rgba(0,0,0,.35)}#navBd{position:fixed;inset:0;z-index:65;background:rgba(0,0,0,.42)}body.navopen #navBd{display:block}#navBd[hidden]{display:none}nav button{min-height:44px}.top{padding:10px 14px}.banner h1{font-size:26px}}@media (max-width:560px){.top .m.s{display:none}.grid{padding:0 12px 12px}.banner{margin:12px}#login{padding:12px}.lc{padding:22px 18px}.lh h1{font-size:24px}}@media (prefers-reduced-motion:reduce){aside{transition:none}}
 </style></head><body>
 <div id="login"><div class="lc"><div class="lh"><div class="lg2">Claro</div><div><h1>Portal Claro Perú</h1><p>Acceso corporativo demo. Elige la aplicación a la que quieres ingresar.</p></div></div>
 <h2>Iniciar sesión</h2><p class="m" style="margin:0 0 16px">Selecciona la aplicación y accede.</p>
@@ -479,7 +480,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
   .home::after{content:"";position:fixed;right:-6%;bottom:-35%;width:24%;height:170%;
     transform:rotate(28deg);pointer-events:none;
     background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);}
-  .lp-bar{position:relative;z-index:1;height:56px;display:flex;align-items:center;gap:16px;padding:0 24px;
+  .lp-bar{position:relative;z-index:3;height:56px;display:flex;align-items:center;gap:16px;padding:0 24px;
     background:rgba(0,0,0,.28);backdrop-filter:blur(8px);}
   .lp-bar .logo{font-weight:800;font-style:italic;font-size:18px;}
   .lp-bar .lp-title{font-weight:700;font-size:15px;}
@@ -696,42 +697,81 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
   .dt-t{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:12px;}
   .dt-t th{text-align:left;padding:8px;border-bottom:1px solid #C9D1DA;font-size:12px;} .dt-t td{padding:8px;border-bottom:1px solid #EEE;vertical-align:top;}
   .dt-ul{margin:0 0 12px;padding-left:18px;font-size:13px;} .dt-sin{color:#999;font-size:12.5px;margin-bottom:12px;}
-
-  /* ---- Box: aplicar la actualización a otras posiciones (masiva) ---- */
-  .mx-overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);display:none;align-items:center;justify-content:center;z-index:110;padding:16px;}
-  .mx-overlay.show{display:flex;}
-  .mx-box{background:#fff;border-radius:16px;width:100%;max-width:700px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.3);overflow:hidden;}
-  .mx-head{display:flex;gap:14px;padding:26px 28px 14px;}
-  .mx-ic{flex:none;width:36px;height:36px;border-radius:50%;background:#1B6FC9;color:#fff;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;}
-  .mx-head h4{margin:0 0 6px;font-size:19px;font-weight:700;color:#222;}
-  .mx-head p{margin:0;font-size:13.5px;color:#666;line-height:1.45;}
-  .mx-tools{display:flex;justify-content:space-between;align-items:center;padding:8px 28px;font-size:13.5px;}
-  .mx-all{display:flex;align-items:center;gap:12px;font-weight:700;cursor:pointer;color:#222;}
-  .mx-tools .mx-av{color:#777;}
-  .mx-list{list-style:none;margin:4px 28px 18px;padding:0;border:1px solid #DADADA;border-radius:10px;overflow-y:auto;min-height:60px;}
-  .mx-row{display:flex;align-items:center;gap:14px;padding:11px 16px;border-bottom:1px solid #E8E8E8;cursor:pointer;}
-  .mx-row:last-child{border-bottom:0;}
-  .mx-row:hover{background:#FAFAFA;}
-  .mx-row.mx-actual{background:#FFF6DC;cursor:default;}
-  .mx-row input{width:16px;height:16px;accent-color:var(--red);flex:none;margin:0;}
-  .mx-info{flex:1;min-width:0;}
-  .mx-l1{font-size:14.5px;color:#222;}
-  .mx-l1 b{margin-right:4px;}
-  .mx-l2{font-size:12.5px;color:#777;margin-top:2px;}
-  .mx-tag{display:inline-block;font-size:11px;font-weight:700;border-radius:10px;padding:1px 9px;margin-left:6px;}
-  .mx-tag-act{background:#FCE3A0;color:#8A5A00;}
-  .mx-tag-nueva{background:#E3EEFB;color:#1B6FC9;}
-  .mx-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 28px;border-top:1px solid #E5E5E5;}
-  .mx-count{font-size:13px;color:#666;}
-  .mx-btns{display:flex;gap:12px;}
-  .mx-btn{border-radius:24px;padding:11px 26px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit;border:1px solid #CFCFCF;background:#fff;color:#222;}
-  .mx-btn:hover{background:#F5F5F5;}
-  .mx-btn.mx-ok{background:var(--red);border-color:var(--red);color:#fff;}
-  .mx-btn.mx-ok:hover{filter:brightness(.93);}
-  .mx-btn:focus-visible,.mx-row input:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
-  @media(max-width:560px){.mx-foot{flex-direction:column;align-items:stretch}.mx-btns{justify-content:flex-end}}
-.fxr-tag-crea{color:#B25E00;background:#FFF0DC;}
+  .fx-toolbar{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 14px;align-items:flex-end;}
+  .fx-toolbar label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#555;font-weight:600;}
+  .fx-toolbar select,.fx-toolbar input{padding:8px 10px;border:1px solid #C9CDD2;border-radius:8px;font-size:12.5px;font-family:inherit;min-width:230px;}
+  .pos-un{color:#7B3FB5;font-size:11.5px;font-weight:600;}
+  .fxr-un{color:#777;font-weight:400;font-size:11.5px;}
+  .ctx-un{background:#FFF8E5;border:1px solid #F1DFA6;border-radius:8px;padding:10px 14px;font-size:12.5px;margin:0 0 14px;line-height:1.7;}
+  .ctx-chip{display:inline-block;background:#fff;border:1px solid #E5D7A6;border-radius:12px;padding:1px 10px;margin:0 4px;font-size:11.5px;font-weight:600;}
+  .fx-ctx{background:#F1F6FD;border:1px solid #CFE0F5;border-radius:8px;padding:9px 14px;font-size:12.5px;margin:0 0 14px;line-height:1.5;}
+  .tag-jef,.tag-ref{font-size:10.5px;font-weight:700;color:#7B3FB5;background:#F1E8FA;border-radius:8px;padding:1px 7px;margin-left:8px;white-space:nowrap;}
+  .alc-ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:92;display:none;align-items:center;justify-content:center;padding:16px;}
+  .alc-ov.show{display:flex;}
+  .alc-box{background:#fff;border-radius:20px;width:100%;max-width:700px;max-height:94vh;display:flex;flex-direction:column;box-shadow:0 16px 48px rgba(0,0,0,.35);}
+  .alc-head{display:flex;gap:14px;padding:24px 28px 10px;}
+  .alc-i{flex:none;width:36px;height:36px;border-radius:50%;background:#1F6FD0;color:#fff;font-weight:700;font-size:20px;
+    display:flex;align-items:center;justify-content:center;font-style:italic;font-family:Georgia,serif;}
+  .alc-head h3{margin:0 0 6px;font-size:19px;} .alc-head p{margin:0;font-size:13.5px;color:#555;line-height:1.5;}
+  .alc-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 28px 8px;font-size:14px;}
+  .alc-bar label{display:flex;align-items:center;gap:12px;font-weight:700;cursor:pointer;} .alc-bar span{color:#666;}
+  .alc-bar input,.alc-row input{width:17px;height:17px;accent-color:var(--red);flex:none;cursor:pointer;}
+  .alc-list{margin:0 28px;border:1px solid #DDD;border-radius:12px;overflow-y:auto;min-height:80px;max-height:340px;}
+  .alc-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid #EEE;cursor:pointer;}
+  .alc-row:last-child{border-bottom:none;} .alc-row:hover{background:#FAFAFA;}
+  .alc-row.ref{background:#FFF8E1;cursor:default;} .alc-row.ref input{cursor:default;}
+  .alc-main{flex:1;min-width:0;display:grid;gap:2px;} .alc-t{font-size:14.5px;} .alc-s{font-size:12.5px;color:#666;}
+  .alc-tag{font-size:11px;font-weight:700;border-radius:10px;padding:2px 10px;margin-left:8px;white-space:nowrap;}
+  .alc-tag.cur{background:#FFE9A8;color:#8a5a00;} .alc-tag.new{background:#E3EEFB;color:#1B6FC9;}
+  .alc-foot{display:flex;align-items:center;gap:12px;padding:16px 28px 20px;border-top:1px solid #EEE;margin-top:14px;}
+  .alc-foot .n{flex:1;font-size:13px;color:#555;}
+  .alc-cancel{border:1px solid #CCC;background:#fff;border-radius:22px;padding:10px 26px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;}
+  .alc-send{border:none;background:var(--red);color:#fff;border-radius:22px;padding:10px 26px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;}
+  .alc-cancel:focus-visible,.alc-send:focus-visible{outline:2px solid #222;outline-offset:2px;}
+  .fxr-body{padding:14px 20px 18px;}
+  .pl-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+  .pl-tools input{flex:1;min-width:220px;padding:8px 12px;border:1px solid #C9CDD2;border-radius:8px;font-size:12.5px;font-family:inherit;}
+  .pl-sum{font-size:12px;color:#666;}
+  .pl-tools button{border:1px solid var(--border);background:#fff;border-radius:6px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:inherit;}
+  .pl-g{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;background:#fff;}
+  .pl-gh{width:100%;display:flex;align-items:center;gap:12px;padding:12px 16px;background:#F4F5F8;border:none;font-family:inherit;cursor:pointer;text-align:left;flex-wrap:wrap;font-size:13px;}
+  .pl-gh:focus-visible{outline:2px solid var(--red);outline-offset:-2px;}
+  .pl-ch{display:inline-block;width:12px;transition:transform .18s;color:#666;}
+  .pl-g.open .pl-ch{transform:rotate(90deg);}
+  .pl-gn{font-weight:700;flex:1;min-width:140px;}
+  .pl-chip{font-size:11.5px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:2px 10px;color:#555;}
+  .pl-chip b{color:#111;} .pl-chip.warn{background:#FFF4E0;border-color:#F1DFA6;color:#8a5a00;}
+  .pl-g:not(.open) .pl-gb{display:none;} .pl-gb{overflow-x:auto;} .pl-gb .dt-t{margin:0;}
+  .pl-vacio{text-align:center;color:#888;padding:22px;font-size:13px;}
 .lp-demo{display:none!important}
+.st-act,.st-crea{display:inline-block;border-radius:10px;padding:2px 9px;font-weight:700;font-size:11.5px;}.st-act{color:#0E7C6B;background:#E2F4F0;}.st-crea{color:#B25E00;background:#FFF0DC;white-space:nowrap;}
+@media (max-width:720px){
+  table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .page-header{padding:0 12px;gap:10px;}
+  .page-header .search-box{display:none;}
+  .page-header .title{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .page-body{padding:16px 14px 96px;}
+  .pcard{padding:14px;}
+  .employee-card{flex-direction:column;}
+  .alc-foot{flex-wrap:wrap;padding:14px 18px 18px;}
+  .alc-foot .n{flex:1 0 100%;}
+  .alc-foot button{flex:1;}
+  .alc-box{max-height:92vh;}
+}
+@media (max-width:720px){
+  .mon,.dt-t{display:block;overflow:visible;}
+  .mon thead,.dt-t thead{display:none;}
+  .mon tbody,.mon tr,.dt-t tbody,.dt-t tr{display:block;}
+  .mon tr,.dt-t tr{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px;background:#fff;}
+  .mon td,.dt-t td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0!important;border:0!important;text-align:right;}
+  .mon td::before,.dt-t td::before{content:attr(data-l);font-weight:700;color:#666;font-size:12px;text-align:left;flex:none;}
+  .mon td:first-child{font-weight:700;}
+  .filters{gap:12px;}
+  .filters .field{flex:1 1 100%;min-width:0;}
+  .filters select,.filters input{width:100%;}
+  .st-act,.st-crea{text-align:center;}
+  .mon td.chev{display:none;}
+}
 </style>
 </head>
 <body>
@@ -783,25 +823,25 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     </div>
   </div>
 
-  <table>
+  <table class="mon">
     <thead><tr>
       <th>ID Solicitud</th><th>Motivo</th><th>Dirección del Solicitante</th>
       <th>Área del Solicitante</th><th>Posición</th><th>Solicitante</th>
       <th>Estado</th><th>Fecha de Creación</th><th></th>
     </tr></thead>
     <tbody>
-      <tr><td>SOL-202608-0022</td><td>Actualización de Descriptivo</td><td>Finanzas</td>
-        <td>SAP y Procesos Financieros</td><td>Posición_PR</td><td>OMAR ALBERTO ZAMUDIO</td>
-        <td class="estado">Pendiente Aprobación Nivel 1</td><td>31/08/2026</td><td class="chev">›</td></tr>
-      <tr><td>SOL-202608-0021</td><td>Nueva Posición</td><td>Finanzas</td>
-        <td>SAP y Procesos Financieros</td><td>Prueba</td><td>OMAR ALBERTO ZAMUDIO</td>
-        <td class="estado">Pendiente Aprobación Nivel 1</td><td>31/08/2026</td><td class="chev">›</td></tr>
-      <tr><td>SOL-202608-0015</td><td>Nueva Posición</td><td>Finanzas</td>
-        <td>SAP y Procesos Financieros</td><td>prueba 8</td><td>OMAR ALBERTO ZAMUDIO</td>
-        <td class="estado">Pendiente Aprobación Nivel 1</td><td>20/08/2026</td><td class="chev">›</td></tr>
-      <tr><td>SOL-202608-0013</td><td>Nueva Posición</td><td>Finanzas</td>
-        <td>SAP y Procesos Financieros</td><td>prueba 7</td><td>OMAR ALBERTO ZAMUDIO</td>
-        <td class="estado">Pendiente Aprobación Nivel 1</td><td>20/08/2026</td><td class="chev">›</td></tr>
+      <tr><td data-l="ID Solicitud">SOL-202608-0022</td><td data-l="Motivo">Actualización de Descriptivo</td><td data-l="Dirección">Finanzas</td>
+        <td data-l="Área">SAP y Procesos Financieros</td><td data-l="Posición">Posición_PR</td><td data-l="Solicitante">OMAR ALBERTO ZAMUDIO</td>
+        <td class="estado" data-l="Estado">Pendiente Aprobación Nivel 1</td><td data-l="Fecha de creación">31/08/2026</td><td class="chev">›</td></tr>
+      <tr><td data-l="ID Solicitud">SOL-202608-0021</td><td data-l="Motivo">Nueva Posición</td><td data-l="Dirección">Finanzas</td>
+        <td data-l="Área">SAP y Procesos Financieros</td><td data-l="Posición">Prueba</td><td data-l="Solicitante">OMAR ALBERTO ZAMUDIO</td>
+        <td class="estado" data-l="Estado">Pendiente Aprobación Nivel 1</td><td data-l="Fecha de creación">31/08/2026</td><td class="chev">›</td></tr>
+      <tr><td data-l="ID Solicitud">SOL-202608-0015</td><td data-l="Motivo">Nueva Posición</td><td data-l="Dirección">Finanzas</td>
+        <td data-l="Área">SAP y Procesos Financieros</td><td data-l="Posición">prueba 8</td><td data-l="Solicitante">OMAR ALBERTO ZAMUDIO</td>
+        <td class="estado" data-l="Estado">Pendiente Aprobación Nivel 1</td><td data-l="Fecha de creación">20/08/2026</td><td class="chev">›</td></tr>
+      <tr><td data-l="ID Solicitud">SOL-202608-0013</td><td data-l="Motivo">Nueva Posición</td><td data-l="Dirección">Finanzas</td>
+        <td data-l="Área">SAP y Procesos Financieros</td><td data-l="Posición">prueba 7</td><td data-l="Solicitante">OMAR ALBERTO ZAMUDIO</td>
+        <td class="estado" data-l="Estado">Pendiente Aprobación Nivel 1</td><td data-l="Fecha de creación">20/08/2026</td><td class="chev">›</td></tr>
     </tbody>
   </table>
 </main>
@@ -845,27 +885,8 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
 
       <div class="tree-panel">
         <p class="tree-title">Selecciona una función y posición para crear un perfil de puesto</p>
-        <ul class="func-list">
-          <li class="func">
-            <div class="func-header"><span class="arrow">›</span>701: Analista SAP</div>
-            <ul class="pos-list">
-              <li class="pos-item" data-id="801" data-nombre="Analista SAP Proyectos">801: Analista SAP Proyectos</li>
-              <li class="pos-item" data-id="802" data-nombre="Analista SAP Proyectos">802: Analista SAP Proyectos</li>
-            </ul>
-          </li>
-          <li class="func">
-            <div class="func-header"><span class="arrow">›</span>702: Especialista SAP</div>
-            <ul class="pos-list">
-              <li class="pos-item" data-id="803" data-nombre="Especialista SAP">803: Especialista SAP</li>
-            </ul>
-          </li>
-          <li class="func">
-            <div class="func-header"><span class="arrow">›</span>703: Coordinador SAP</div>
-            <ul class="pos-list">
-              <li class="pos-item" data-id="804" data-nombre="Coordinador SAP">804: Coordinador SAP</li>
-            </ul>
-          </li>
-        </ul>
+        <div class="fx-toolbar" id="copiarToolbar" style="margin-bottom:10px"><label>Unidad organizativa<select id="copiarUnidad"></select></label></div>
+        <ul class="func-list" id="copiarLista"></ul>
       </div>
 
       <div class="desc-panel">
@@ -974,7 +995,12 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     </div>
 
     <div class="actualizar-body">
-      <p class="fx-intro">Selecciona una función y la posición cuyo descriptivo deseas actualizar. Al enviar la solicitud podrás extenderla a otras posiciones de la misma función.</p>
+      <p class="fx-intro">Selecciona la <b>posición de referencia</b>: su descriptivo se carga para editarlo. Al final del formulario podrás aplicar la actualización de forma masiva a otras posiciones de la misma función.</p>
+      <div class="fx-toolbar" id="fxToolbar">
+        <label>Alcance<select id="fxUnidad"></select></label>
+        <label>Buscar<input id="fxBuscar" placeholder="Código, posición o colaborador…"></label>
+      </div>
+      <div class="fx-ctx" id="fxCtx"></div>
       <div id="funcAcordeon"></div>
     </div>
 
@@ -993,34 +1019,60 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
 
   // Funciones y posiciones (layout: Código Posición / Posición / Posee Descriptivo).
   // Las marcadas con nueva:true son posiciones recién creadas y aún no tienen descriptivo.
-  const FUNCIONES_ACTUALIZAR = [
-    { codigo: '701', nombre: 'Analista SAP', posiciones: [
-      { cod: '801', nombre: 'Analista SAP Proyectos',  colab: 'Juan Pérez',      desc: true },
-      { cod: '802', nombre: 'Analista SAP Proyectos',  colab: 'María Gómez',     desc: true },
-      { cod: '805', nombre: 'Analista SAP Junior',     colab: 'Pedro Ramírez',   desc: false },
-      { cod: '807', nombre: 'Analista SAP Finanzas',   colab: 'Vacante',         desc: false, nueva: true }
-    ]},
-    { codigo: '702', nombre: 'Especialista SAP', posiciones: [
-      { cod: '803', nombre: 'Especialista SAP',          colab: 'Lucía Fernández', desc: true },
-      { cod: '808', nombre: 'Especialista SAP Logística', colab: 'Vacante',        desc: false, nueva: true }
-    ]},
-    { codigo: '703', nombre: 'Coordinador SAP', posiciones: [
-      { cod: '804', nombre: 'Coordinador SAP',         colab: 'Andrés Torres',   desc: true },
-      { cod: '806', nombre: 'Coordinador SAP Junior',  colab: 'Karla Díaz',      desc: false },
-      { cod: '809', nombre: 'Coordinador SAP Soporte', colab: 'Vacante',         desc: false, nueva: true }
-    ]}
+  const UNIDADES = [
+    { nombre: 'Gerencia SAP y Procesos Financieros', cod: '7009781' },
+    { nombre: 'SAP Proyectos', cod: '7009627' },
+    { nombre: 'SAP Producción', cod: '7009640' }
   ];
+  const Q = (cod, nombre, colab, desc, u, ecod, extra) => Object.assign({ cod, nombre, colab, desc, u, ecod, act: '', mod: '' }, extra);
+  const OZ = { act: '21/10/2026', mod: 'Omar Alberto Zamudio' }, BH = { act: '22/10/2026', mod: 'Bento Huaytalla' };
+  const FUNCIONES_ACTUALIZAR = [
+    { codigo: '600', nombre: 'Gerente de Área', posiciones: [
+      Q('780', 'Gerente de SAP y Procesos Financieros', 'Sara Cordova', true, 0, 'C10021', { lider: true, yo: 'sara' }) ] },
+    { codigo: '700', nombre: 'Jefe de SAP', posiciones: [
+      Q('800', 'Jefe de SAP Proyectos', 'Omar Alberto Zamudio Surco', true, 1, 'C12417', { lider: true, yo: 'omar' }),
+      Q('810', 'Jefe de SAP Producción', 'Bento Huaytalla', true, 2, 'C11876', { lider: true }) ] },
+    { codigo: '701', nombre: 'Analista SAP', posiciones: [
+      Q('801', 'Analista SAP Proyectos', 'Juan Pérez', true, 1, 'C14187', OZ),
+      Q('802', 'Analista SAP Proyectos', 'María Gómez', true, 1, 'C14202'),
+      Q('805', 'Analista SAP Junior', 'Pedro Ramírez', false, 1, 'C14310'),
+      Q('807', 'Analista SAP Finanzas', 'Vacante', false, 0, '', { nueva: true }),
+      Q('811', 'Analista SAP Producción', 'Rosa Linares', true, 2, 'C15021', BH),
+      Q('812', 'Analista SAP Producción', 'Diego Paredes', true, 2, 'C15034'),
+      Q('814', 'Analista SAP Mantenimiento', 'Jorge Quispe', false, 2, 'C15102'),
+      Q('816', 'Analista SAP Planta', 'Vacante', false, 2, '', { nueva: true }) ] },
+    { codigo: '702', nombre: 'Especialista SAP', posiciones: [
+      Q('803', 'Especialista SAP', 'Lucía Fernández', true, 1, 'C14455', OZ),
+      Q('808', 'Especialista SAP Logística', 'Vacante', false, 1, '', { nueva: true }),
+      Q('813', 'Especialista SAP Producción', 'Mónica Salazar', true, 2, 'C14970', BH) ] },
+    { codigo: '703', nombre: 'Coordinador SAP', posiciones: [
+      Q('804', 'Coordinador SAP', 'Andrés Torres', true, 0, 'C14120'),
+      Q('806', 'Coordinador SAP Junior', 'Karla Díaz', false, 0, 'C14388'),
+      Q('809', 'Coordinador SAP Soporte', 'Vacante', false, 0, '', { nueva: true }),
+      Q('815', 'Coordinador SAP Producción', 'Patricia Vega', true, 2, 'C14815') ] }
+  ];
+  // Omar gestiona su jefatura; Sara (Gerente) gestiona la Gerencia y sus dos jefaturas
+  const unidadesUsuario = () => window.usuarioActual().id === 'sara' ? [0, 1, 2] : [1];
+  const visiblesDe = f => f.posiciones.filter(p => unidadesUsuario().includes(p.u) && p.yo !== window.usuarioActual().id);
 
-  let selAct = []; // posiciones seleccionadas (siempre de una misma función)
+  let selAct = []; // [posición de referencia]
+  const multiU = () => unidadesUsuario().length > 1;
+  const nm = t => (t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  // Funciones de la Gerencia: sus posiciones directas y las jefaturas (función Jefe de SAP) que responden a ella
+  const enGerencia = (p, f) => p.u === 0 || f.codigo === '700';
+  const enAlcance = (p, f, sc) => sc === '' || (sc === 'ger' ? enGerencia(p, f) : String(p.u) === sc);
 
   function renderAcordeonActualizar() {
-    funcAcordeon.innerHTML = FUNCIONES_ACTUALIZAR.map(f => {
+    const multi = multiU();
+    const funciones = FUNCIONES_ACTUALIZAR.map(f => ({ ...f, posiciones: visiblesDe(f) })).filter(f => f.posiciones.length);
+    funcAcordeon.innerHTML = funciones.map(f => {
       const n = f.posiciones.length;
       const filas = f.posiciones.map(p => `
-        <tr data-cod="${p.cod}">
-          <td><input type="radio" name="posAct" value="${p.cod}" aria-label="Seleccionar posición ${p.cod}"></td>
+        <tr data-cod="${p.cod}" data-u="${p.u}" data-ger="${enGerencia(p, f) ? 1 : 0}" data-q="${nm(p.cod + ' ' + p.nombre + ' ' + p.colab)}">
+          <td><input type="radio" name="refAct" value="${p.cod}" aria-label="Elegir la posición ${p.cod} como referencia"></td>
           <td class="fx-cod">${p.cod}</td>
-          <td>${p.nombre}${p.nueva ? '<span class="tag-nueva">Nueva</span>' : ''}</td>
+          <td>${p.nombre}${p.nueva ? '<span class="tag-nueva">Nueva</span>' : ''}${multi && f.codigo === '700' ? '<span class="tag-jef">Jefatura · responde a Sara</span>' : ''}</td>
+          ${multi ? `<td>${UNIDADES[p.u].nombre}</td>` : ''}
           <td>${p.colab}</td>
           <td>${p.desc ? '<span class="badge-si">Sí</span>' : '<span class="badge-no">No</span>'}</td>
         </tr>`).join('');
@@ -1035,7 +1087,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
         <div class="fx-body" id="fx-body-${f.codigo}">
           <div class="fx-body-inner">
             <table class="fx-table">
-              <thead><tr><th></th><th>Código Posición</th><th>Posición</th><th>Colaborador</th><th>Posee Descriptivo</th></tr></thead>
+              <thead><tr><th></th><th>Código Posición</th><th>Posición</th>${multi ? '<th>Unidad Organizativa</th>' : ''}<th>Colaborador</th><th>Posee Descriptivo</th></tr></thead>
               <tbody>${filas}</tbody>
             </table>
           </div>
@@ -1047,53 +1099,56 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       h.onclick = () => { const abierto = h.parentElement.classList.toggle('open'); h.setAttribute('aria-expanded', abierto); };
     });
     funcAcordeon.querySelectorAll('tbody tr').forEach(tr => {
-      const cb = tr.querySelector('input');
-      cb.onchange = () => alCambiarSel(tr.closest('.fx-item').dataset.func);
-      tr.onclick = (e) => { if (e.target !== cb) { cb.checked = true; cb.onchange(); } };
-    });
-    funcAcordeon.querySelectorAll('.fx-all').forEach(all => {
-      all.onchange = () => { const it = all.closest('.fx-item'); it.querySelectorAll('tbody input').forEach(i => { i.checked = all.checked; }); alCambiarSel(it.dataset.func); };
+      const rd = tr.querySelector('input');
+      rd.onchange = refrescarSel;
+      tr.onclick = (e) => { if (e.target !== rd) { rd.checked = true; refrescarSel(); } };
     });
   }
 
-  function alCambiarSel(fcod) {
-    let aviso = '';
+  function filtrarAct(abrir) {
+    const sc = document.getElementById('fxUnidad').value, q = nm(document.getElementById('fxBuscar').value.trim());
     funcAcordeon.querySelectorAll('.fx-item').forEach(it => {
-      if (it.dataset.func !== fcod && it.querySelector('tbody input:checked')) {
-        it.querySelectorAll('input').forEach(i => { i.checked = false; });
-        aviso = 'La actualización masiva aplica a posiciones de una misma función: se quitó la selección de la otra función.';
-      }
+      let n = 0;
+      it.querySelectorAll('tbody tr').forEach(tr => {
+        const okU = sc === '' || (sc === 'ger' ? tr.dataset.ger === '1' : tr.dataset.u === sc);
+        const ok = okU && (!q || tr.dataset.q.includes(q)); tr.hidden = !ok; if (ok) n++;
+      });
+      it.hidden = n === 0;
+      it.querySelector('.fx-count').innerHTML = `<b>${n}</b> ${n === 1 ? 'posición' : 'posiciones'}`;
+      if (abrir === true && n && (sc !== 'ger' || q)) { it.classList.add('open'); it.querySelector('.fx-head').setAttribute('aria-expanded', 'true'); }
     });
-    refrescarSel(aviso);
+    document.getElementById('fxCtx').textContent = sc === 'ger'
+      ? 'Funciones de la Gerencia de Sara Cordova. Las unidades SAP Proyectos y SAP Producción responden a la Gerencia mediante la función Jefe de SAP; usa "Alcance" para ver las posiciones de cada unidad.'
+      : sc === '' ? 'Posiciones de todas tus unidades organizativas.' : 'Posiciones de ' + UNIDADES[+sc].nombre + '.';
   }
 
-  function refrescarSel(aviso) {
+  function refrescarSel() {
+    const r = funcAcordeon.querySelector('tbody input:checked');
     selAct = [];
-    FUNCIONES_ACTUALIZAR.forEach(f => f.posiciones.forEach(p => {
-      const cb = funcAcordeon.querySelector(`tr[data-cod="${p.cod}"] input`);
-      if (cb && cb.checked) selAct.push({ ...p, funcion: f });
-    }));
-    const marcadas = new Set(selAct.map(p => p.cod));
-    funcAcordeon.querySelectorAll('tbody tr').forEach(t => t.classList.toggle('row-sel', marcadas.has(t.dataset.cod)));
+    if (r) FUNCIONES_ACTUALIZAR.forEach(f => f.posiciones.forEach(p => { if (p.cod === r.value) selAct = [{ ...p, funcion: f }]; }));
+    funcAcordeon.querySelectorAll('tbody tr').forEach(t => t.classList.toggle('row-sel', !!r && t.dataset.cod === r.value));
     funcAcordeon.querySelectorAll('.fx-item').forEach(it => {
-      const n = it.querySelectorAll('tbody input:checked').length;
-      it.classList.toggle('has-sel', n > 0);
-      it.querySelector('.fx-sel-tag').textContent = n === 0 ? '' : 'Posición ' + selAct[0].cod + ' seleccionada';
-      
+      const on = !!it.querySelector('tbody input:checked');
+      it.classList.toggle('has-sel', on);
+      it.querySelector('.fx-sel-tag').textContent = on ? 'Referencia: ' + selAct[0].cod : '';
     });
-    btnContinuarActualizar.disabled = selAct.length === 0;
-    const sinDesc = selAct.filter(p => !p.desc).length, f = selAct[0] && selAct[0].funcion;
-    let msg = '';
-    if (selAct.length === 1) msg = selAct[0].desc ? 'Seleccionada: ' + selAct[0].cod + ' - ' + selAct[0].nombre
-      : selAct[0].cod + ' - ' + selAct[0].nombre + ': aún no tiene descriptivo, lo registrarás desde cero.';
-    else if (selAct.length > 1) msg = 'Actualización masiva: ' + selAct.length + ' posiciones de ' + f.codigo + ': ' + f.nombre + (sinDesc ? ' · ' + sinDesc + ' sin descriptivo' : '');
-    hintActualizar.className = 'hint-inline' + (aviso || (selAct.length && sinDesc === selAct.length) ? ' hint-warn' : '');
-    hintActualizar.textContent = aviso || msg;
+    btnContinuarActualizar.disabled = !selAct.length;
+    const s0 = selAct[0];
+    hintActualizar.className = 'hint-inline' + (s0 && !s0.desc ? ' hint-warn' : '');
+    hintActualizar.textContent = !s0 ? '' : s0.desc ? 'Posición de referencia: ' + s0.cod + ' - ' + s0.nombre + ' (podrás aplicarla de forma masiva al final)'
+      : s0.cod + ' - ' + s0.nombre + ': aún no tiene descriptivo, lo registrarás desde cero.';
   }
 
   function abrirModalActualizar() {
     selAct = [];
+    const multi = multiU(), su = document.getElementById('fxUnidad'), sb = document.getElementById('fxBuscar');
+    document.getElementById('fxToolbar').style.display = multi ? '' : 'none';
+    document.getElementById('fxCtx').style.display = multi ? '' : 'none';
+    su.innerHTML = '<option value="ger">Gerencia (inicio)</option>' + unidadesUsuario().filter(i => i !== 0).map(i => `<option value="${i}">${UNIDADES[i].nombre}</option>`).join('') + '<option value="">Todas mis unidades</option>';
+    su.value = multi ? 'ger' : ''; sb.value = '';
+    su.onchange = () => filtrarAct(true); sb.oninput = () => filtrarAct(true);
     renderAcordeonActualizar();
+    if (multi) filtrarAct(false);
     btnContinuarActualizar.disabled = true;
     hintActualizar.className = 'hint-inline';
     hintActualizar.textContent = '';
@@ -1104,17 +1159,102 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
 
   btnContinuarActualizar.onclick = () => {
     if (!selAct.length) return;
-    const f = selAct[0].funcion, nombres = [...new Set(selAct.map(p => p.nombre))];
+    const r = selAct[0];
     overlayActualizar.classList.remove('show');
     abrirNuevaSolicitud({
-      modo: 'actualizar',
-      codigoPosicion: selAct.length === 1 ? selAct[0].cod : '',
-      nombrePosicion: nombres.length === 1 ? nombres[0] : f.nombre,
-      conDescriptivo: selAct.some(p => p.desc),
-      funcion: f,
-      posiciones: selAct.map(({ cod, nombre, colab, desc }) => ({ cod, nombre, colab, desc }))
+      modo: 'actualizar', codigoPosicion: r.cod, nombrePosicion: r.nombre, conDescriptivo: r.desc, funcion: r.funcion, alcance: document.getElementById('fxUnidad').value,
+      posiciones: [{ cod: r.cod, nombre: r.nombre, colab: r.colab, desc: r.desc, u: r.u }]
     });
   };
+
+  // ---- Al enviar una actualización: a qué otras posiciones se aplica (masiva) ----
+  function abrirAlcanceMasivo(onEnviar) {
+    const byId = id => document.getElementById(id);
+    const f = window._funcionActual, ref = window._posObjs && window._posObjs[0];
+    if (!f || !ref) { onEnviar(); return; }
+    const sc = window._alcanceInicio == null ? '' : window._alcanceInicio;
+    const cand = visiblesDe(f).filter(p => p.cod === ref.cod || enAlcance(p, f, sc)), otras = cand.filter(p => p.cod !== ref.cod);
+    if (!otras.length) { onEnviar(); return; } // no hay más posiciones en la función: se envía solo la actual
+    const multi = multiU(), ov = byId('alcOv'), lista = byId('alcLista'), previo = document.activeElement;
+    const donde = !multi ? '' : sc === 'ger' ? ' de la Gerencia' : sc === '' ? ' de todas tus unidades organizativas' : ' de la jefatura ' + UNIDADES[+sc].nombre;
+    byId('alcSub').textContent = `Solo se listan las posiciones de la función ${f.codigo}: ${f.nombre}${donde}. La posición ${ref.cod} ya está incluida. Es opcional: puedes enviar solo la actual.`;
+    byId('alcDisp').textContent = otras.length + (otras.length === 1 ? ' disponible' : ' disponibles');
+    lista.innerHTML = cand.map(p => { const es = p.cod === ref.cod; return `<label class="alc-row${es ? ' ref' : ''}">
+        <input type="checkbox" value="${p.cod}" ${es ? 'checked disabled' : ''} aria-label="Aplicar a la posición ${p.cod}">
+        <span class="alc-main"><span class="alc-t"><b>${p.cod}</b> ${p.nombre}${es ? '<span class="alc-tag cur">Esta solicitud</span>' : ''}${p.nueva ? '<span class="alc-tag new">Nueva</span>' : ''}</span>
+          <span class="alc-s">${p.colab} · ${p.desc ? 'Con descriptivo' : 'Sin descriptivo'}${multi ? ' · ' + UNIDADES[p.u].nombre : ''}</span></span>
+        <span class="${p.desc ? 'badge-si' : 'badge-no'}">${p.desc ? 'Sí' : 'No'}</span></label>`; }).join('');
+    const cbs = () => [...lista.querySelectorAll('input:not(:disabled)')];
+    const actualizar = () => {
+      const n = cbs().filter(c => c.checked).length, all = byId('alcAll');
+      all.checked = n === cbs().length; all.indeterminate = n > 0 && n < cbs().length;
+      byId('alcCount').textContent = (n + 1) + (n === 0 ? ' posición a actualizar' : ' posiciones a actualizar');
+    };
+    lista.onchange = actualizar;
+    byId('alcAll').onchange = e => { cbs().forEach(c => { c.checked = e.target.checked; }); actualizar(); };
+    const onKey = e => { if (e.key === 'Escape') cerrar(); };
+    function cerrar() { ov.classList.remove('show'); document.removeEventListener('keydown', onKey); if (previo && previo.focus) previo.focus(); }
+    byId('alcCancel').onclick = cerrar;
+    ov.onclick = e => { if (e.target === ov) cerrar(); };
+    byId('alcSend').onclick = () => {
+      const marcadas = cbs().filter(c => c.checked).map(c => c.value);
+      const sel = [ref].concat(otras.filter(p => marcadas.includes(p.cod))).map(({ cod, nombre, colab, desc, u }) => ({ cod, nombre, colab, desc, u }));
+      window._posObjs = sel; window._posSel = sel.map(q => q.cod);
+      byId('motivoTexto').textContent = 'Actualización de Descriptivo' + (sel.length > 1 ? ' (masiva)' : '');
+      cerrar(); onEnviar();
+    };
+    document.addEventListener('keydown', onKey);
+    byId('alcAll').checked = false; actualizar();
+    ov.classList.add('show'); byId('alcAll').focus();
+  }
+
+  // ---- Lista de posiciones: tabla simple (hasta 10) o vista agrupada por unidad con búsqueda (más de 10) ----
+  function posListHTML(items, refCod, conEstado) {
+    const badge = d => d ? '<span class="badge-si">Sí</span>' : '<span class="badge-no">No</span>';
+    const fila = (p, conU) => `<tr data-q="${nm([p.cod, p.nombre, p.colab, p.uo].join(' '))}"><td data-l="Código"><b>${p.cod}</b>${p.cod === refCod ? '<span class="tag-ref">Referencia</span>' : ''}</td><td data-l="Posición">${p.nombre}</td>${conU ? `<td data-l="Unidad">${p.uo || ''}</td>` : ''}<td data-l="Colaborador">${p.colab === 'Vacante' ? '<span class="rp-vac">Vacante</span>' : p.colab}</td><td data-l="Posee descriptivo">${badge(p.desc)}</td>${conEstado ? '<td data-l="Estado">' + (p.desc ? '<span class="st-act">Actualizando Descriptivo en esta solicitud</span>' : '<span class="st-crea">Creando descriptivo</span>') + '</td>' : ''}</tr>`;
+    const head = conU => `<thead><tr><th>Código</th><th>Posición</th>${conU ? '<th>Unidad</th>' : ''}<th>Colaborador</th><th>Posee descriptivo</th>${conEstado ? '<th>Estado</th>' : ''}</tr></thead>`;
+    const unidades = [...new Set(items.map(p => p.uo || ''))];
+    if (items.length <= 10) {
+      const conU = unidades.length > 1;
+      return `<table class="dt-t">${head(conU)}<tbody>${items.map(p => fila(p, conU)).join('')}</tbody></table>`;
+    }
+    const grupos = unidades.map(u => items.filter(p => (p.uo || '') === u));
+    return `<div class="pl-friendly">
+      <div class="pl-tools"><input class="pl-q" placeholder="Buscar por código, posición o colaborador…" aria-label="Buscar posiciones">
+        <span class="pl-sum">${items.length} posiciones · ${unidades.length} ${unidades.length === 1 ? 'unidad' : 'unidades'}</span>
+        <button type="button" class="pl-exp">⌄ Expandir todo</button><button type="button" class="pl-col">⌃ Colapsar todo</button></div>
+      ${grupos.map(ps => { const sin = ps.filter(p => !p.desc).length, conRef = ps.some(p => p.cod === refCod);
+        return `<section class="pl-g${conRef ? ' open' : ''}"><button type="button" class="pl-gh" aria-expanded="${conRef}"><span class="pl-ch">›</span><span class="pl-gn">${ps[0].uo || 'Sin unidad'}</span>
+          <span class="pl-chip"><b>${ps.length}</b> ${ps.length === 1 ? 'posición' : 'posiciones'}</span><span class="pl-chip${sin ? ' warn' : ''}"><b>${sin}</b> sin descriptivo</span></button>
+          <div class="pl-gb"><table class="dt-t">${head(false)}<tbody>${ps.map(p => fila(p, false)).join('')}</tbody></table></div></section>`; }).join('')}
+      <div class="pl-vacio" hidden>Ninguna posición coincide con la búsqueda.</div></div>`;
+  }
+  function posListBind(root) {
+    const f = root.querySelector('.pl-friendly'); if (!f) return;
+    const setAll = ab => f.querySelectorAll('.pl-g').forEach(g => { g.classList.toggle('open', ab); g.querySelector('.pl-gh').setAttribute('aria-expanded', ab); });
+    f.querySelectorAll('.pl-gh').forEach(h => { h.onclick = () => { const o = h.parentElement.classList.toggle('open'); h.setAttribute('aria-expanded', o); }; });
+    f.querySelector('.pl-exp').onclick = () => setAll(true); f.querySelector('.pl-col').onclick = () => setAll(false);
+    f.querySelector('.pl-q').oninput = e => {
+      const q = nm(e.target.value.trim()); let total = 0;
+      f.querySelectorAll('.pl-g').forEach(g => {
+        let n = 0; g.querySelectorAll('tbody tr').forEach(tr => { const ok = !q || tr.dataset.q.includes(q); tr.hidden = !ok; if (ok) n++; });
+        g.hidden = n === 0; total += n;
+        if (q && n) { g.classList.add('open'); g.querySelector('.pl-gh').setAttribute('aria-expanded', 'true'); }
+      });
+      f.querySelector('.pl-vacio').hidden = total > 0;
+    };
+  }
+
+  // Aviso de contexto en el paso "Tipo de solicitud" para la Gerente
+  function ctxUnidades() {
+    const cont = document.querySelector('.opt-card').parentElement;
+    let d = document.getElementById('ctxUnidades');
+    if (!d) { d = document.createElement('div'); d.id = 'ctxUnidades'; d.className = 'ctx-un'; cont.parentElement.insertBefore(d, cont); }
+    const ids = unidadesUsuario();
+    d.style.display = ids.length > 1 ? '' : 'none';
+    d.innerHTML = '<b>Como Gerente</b> puedes generar los 3 tipos de solicitud para tus unidades organizativas: ' + ids.map(i => `<span class="ctx-chip">${UNIDADES[i].nombre}</span>`).join('');
+  }
+  document.getElementById('btnNueva').addEventListener('click', ctxUnidades);
 <\/script>
 
 <script>
@@ -1124,7 +1264,24 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
   const descTitulo = document.getElementById('descTitulo');
   const hintCopiar = document.getElementById('hintCopiar');
 
+  function renderCopiar() {
+    const ids = unidadesUsuario(), sel = document.getElementById('copiarUnidad');
+    if (sel.dataset.listo !== ids.join()) {
+      sel.innerHTML = '<option value="">Todas las unidades</option>' + ids.map(i => `<option value="${i}">${UNIDADES[i].nombre}</option>`).join('');
+      sel.dataset.listo = ids.join(); sel.value = ''; sel.onchange = renderCopiar;
+    }
+    document.getElementById('copiarToolbar').style.display = ids.length > 1 ? '' : 'none';
+    const fu = sel.value;
+    document.getElementById('copiarLista').innerHTML = FUNCIONES_ACTUALIZAR.map(fn => {
+      const ps = fn.posiciones.filter(p => p.desc && ids.includes(p.u) && (fu === '' || String(p.u) === fu));
+      return ps.length ? `<li class="func"><div class="func-header"><span class="arrow">›</span>${fn.codigo}: ${fn.nombre}</div><ul class="pos-list">${ps.map(p =>
+        `<li class="pos-item" data-id="${p.cod}" data-nombre="${p.nombre}" data-u="${p.u}">${p.cod}: ${p.nombre}${ids.length > 1 ? ` <span class="pos-un">· ${UNIDADES[p.u].nombre}</span>` : ''}</li>`).join('')}</ul></li>` : '';
+    }).join('') || '<li style="padding:12px;color:#888">No hay descriptivos disponibles.</li>';
+    bindCopiar();
+  }
+
   function abrirModalCopiar() {
+    renderCopiar();
     document.querySelectorAll('.func').forEach(f => f.classList.remove('expanded'));
     document.querySelectorAll('.pos-item').forEach(p => p.classList.remove('selected'));
     document.querySelectorAll('.acc-item').forEach(a => a.classList.remove('open'));
@@ -1136,6 +1293,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
 
   document.getElementById('btnCerrarCopiar').onclick = () => { overlayCopiar.classList.remove('show'); overlay.classList.add('show'); };
 
+  function bindCopiar() {
   document.querySelectorAll('.func-header').forEach(h => {
     h.onclick = () => h.parentElement.classList.toggle('expanded');
   });
@@ -1151,6 +1309,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       descBody.classList.add('show');
     };
   });
+  }
 
   document.querySelectorAll('.acc-header').forEach(h => {
     h.onclick = () => h.parentElement.classList.toggle('open');
@@ -1211,7 +1370,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
   <div class="exito" id="exitoSolicitud">
     <div class="ok">✓</div>
     <h2 style="margin:0 0 6px;">¡Solicitud enviada!</h2>
-    <p style="color:#666;font-size:13px;margin:0 0 20px;">Tu solicitud <b id="exitoId"></b> fue registrada y sigue el flujo de aprobación (Nivel 1: Gerente).</p>
+    <p style="color:#666;font-size:13px;margin:0 0 20px;">Tu solicitud <b id="exitoId"></b> fue registrada y sigue el flujo de aprobación <span id="exitoFlujo">(Nivel 1: Gerente)</span>.</p>
     <div class="fx-resumen" id="exitoFuncion"></div>
     <button class="btn btn-red" id="btnVolverMonitor">Volver al monitor</button>
   </div>
@@ -1305,8 +1464,9 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
             <div class="gray-input">Administración y Finanzas</div>
           </div>
           <div class="form-field">
-            <label>Unidad Organizativa:</label>
-            <div class="gray-input">SAP Proyectos</div>
+            <label>Unidad Organizativa: <span class="req" id="fUnidadReq" style="display:none">*</span></label>
+            <div class="gray-input" id="fUnidadBox">SAP Proyectos</div>
+            <select class="field-select" id="fUnidad" style="display:none"></select>
           </div>
         </div>
         <div class="siguiente-row"><button class="btn btn-outline-red btn-siguiente" data-next="2">Siguiente →</button></div>
@@ -1780,6 +1940,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
   const CAMPOS_REQUERIDOS = [
     { id: 'fSustentoPrincipal', tab: '1', msg: 'El sustento de la solicitud es obligatorio' },
     { id: 'fNombrePuesto', tab: '1', msg: 'El nombre del puesto es obligatorio' },
+    { id: 'fUnidad', tab: '1', msg: 'Selecciona la unidad organizativa de la nueva posición' },
     { id: 'fResponsabilidad', tab: '2', msg: 'La responsabilidad principal es obligatoria' },
     { id: 'fReportaJerar', tab: '2', msg: 'Debes indicar a quién reporta jerárquicamente la posición' },
     { id: 'fReportaFunc', tab: '2', msg: 'Debes indicar a quién reporta funcionalmente la posición' },
@@ -1862,8 +2023,8 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       (todos[0].el || document.getElementById(todos[0].id)).focus();
       return;
     }
-    // Nueva Posición (desde cero / copiar modelo) pide confirmación; Actualización registra directo
-    if (window._modoActual === 'actualizar') abrirSeleccionMasiva(registrarSolicitud);
+    // Nueva Posición (desde cero / copiar modelo) pide confirmación; Actualización pregunta a qué otras posiciones aplicarla
+    if (window._modoActual === 'actualizar') abrirAlcanceMasivo(registrarSolicitud);
     else confirmarEnvio(registrarSolicitud);
   };
 
@@ -1871,11 +2032,13 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     const id = 'SOL-' + '202609-' + String(contadorSolicitudes++).padStart(4, '0');
     const hoy = new Date().toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
     registrarAprobacion(id, hoy);
+    const esSara = window.usuarioActual().id === 'sara';
+    document.getElementById('exitoFlujo').textContent = esSara ? '(Nivel 1 omitido por ser solicitud de la Gerencia; pasa a Nivel 2: Gestión Humana)' : '(Nivel 1: Gerente)';
     const tr = document.createElement('tr');
     tr.className = 'fila-nueva';
     tr.innerHTML = `<td>${id}</td><td>${document.getElementById('motivoTexto').textContent}</td><td>Finanzas</td>
-      <td>SAP y Procesos Financieros</td><td>${document.getElementById('fNombrePuesto').value}</td><td>OMAR ALBERTO ZAMUDIO</td>
-      <td class="estado">Pendiente Aprobación Nivel 1</td><td>${hoy}</td><td class="chev">›</td>`;
+      <td>SAP y Procesos Financieros</td><td>${document.getElementById('fNombrePuesto').value}</td><td>${esSara ? 'SARA CORDOVA' : 'OMAR ALBERTO ZAMUDIO'}</td>
+      <td class="estado">${esSara ? 'Pendiente Aprobación Nivel 2' : 'Pendiente Aprobación Nivel 1'}</td><td>${hoy}</td><td class="chev">›</td>`;
     document.querySelector('main table tbody').prepend(tr);
     const h2 = document.querySelector('.section-head h2');
     h2.textContent = h2.textContent.replace(/\((\d+)\)/, (m, n) => '(' + (parseInt(n) + 1) + ')');
@@ -1918,44 +2081,27 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
 
   // ---- Actualización: listado de posiciones de la función seleccionada ----
   function renderPosicionesFuncion() {
-    const cont = document.getElementById('exitoFuncion');
-    const f = window._funcionActual;
-    if (window._modoActual !== 'actualizar' || !f) { cont.classList.remove('show'); cont.innerHTML = ''; return; }
-
-    const incl = f.posiciones.filter(p => (window._posSel || []).includes(p.cod));
-    const total = incl.length;
-    const conDesc = incl.filter(p => p.desc).length;
-    const filas = incl.map(p => {
-      const actual = (window._posSel || []).includes(p.cod);
-      return `<li class="fxr-row${actual ? ' fxr-actual' : ''}">
-        <span class="fxr-cod">${p.cod}</span>
-        <span class="fxr-nombre">${p.nombre}${p.nueva ? '<span class="fxr-tag fxr-tag-nueva">Nueva</span>' : ''}</span>
-        <span class="fxr-colab">${p.colab}</span>
-        <span>${p.desc ? '<span class="badge-si">Sí</span>' : '<span class="badge-no">No</span>'}</span>
-        <span class="fxr-estado">${actual ? (p.desc ? '<span class="fxr-tag">Actualizando Descriptivo en esta solicitud</span>' : '<span class="fxr-tag fxr-tag-crea">Creando descriptivo</span>') : '<span class="fxr-dash">—</span>'}</span>
-      </li>`;
-    }).join('');
-
+    const cont = document.getElementById('exitoFuncion'), f = window._funcionActual, ps = window._posObjs;
+    if (window._modoActual !== 'actualizar' || !f || !ps || !ps.length) { cont.classList.remove('show'); cont.innerHTML = ''; return; }
+    const items = ps.map(q => ({ ...q, uo: UNIDADES[q.u].nombre }));
+    const n = items.length, conDesc = items.filter(q => q.desc).length, uns = new Set(items.map(q => q.uo)).size;
+    const refCod = window._refPosicion ? window._refPosicion.cod : ps[0].cod;
     cont.innerHTML = `
-      <div class="fxr-head">
-        <h3>Posiciones de esta solicitud · función ${f.codigo}: ${f.nombre}</h3>
-        <p>Estas son las posiciones incluidas en tu solicitud: las que tienen descriptivo se actualizarán y las que no, se crearán.</p>
-      </div>
+      <div class="fxr-head"><h3>Posiciones incluidas en la solicitud</h3>
+        <p>Función ${f.codigo}: ${f.nombre}. ${n === 1 ? 'Solo se incluyó la posición de referencia.' : 'El descriptivo actualizado se aplicará a las ' + n + ' posiciones elegidas.'}</p></div>
       <div class="fxr-stats">
-        <span class="fxr-stat"><b>${total}</b> posiciones</span>
-        <span class="fxr-stat"><b>${conDesc}</b> a actualizar</span>
-        <span class="fxr-stat"><b>${total - conDesc}</b> a crear</span>
-      </div>
-      <ul class="fxr-list">
-        <li class="fxr-row fxr-colhead"><span>Código</span><span>Posición</span><span>Colaborador</span><span>Posee descriptivo</span><span>Estado</span></li>
-        ${filas}
-      </ul>`;
+        <span class="fxr-stat"><b>${n}</b> ${n === 1 ? 'posición' : 'posiciones'}</span>
+        <span class="fxr-stat"><b>${conDesc}</b> con descriptivo</span>
+        <span class="fxr-stat"><b>${n - conDesc}</b> sin descriptivo</span>
+        ${uns > 1 ? `<span class="fxr-stat"><b>${uns}</b> unidades</span>` : ''}</div>
+      <div class="fxr-body">${posListHTML(items, refCod, true)}</div>`;
+    posListBind(cont);
     cont.classList.add('show');
   }
 <\/script>
 
 <script>
-  function abrirNuevaSolicitud({ modo, nombrePosicion, codigoPosicion, conDescriptivo, funcion, posiciones }) {
+  function abrirNuevaSolicitud({ modo, nombrePosicion, codigoPosicion, conDescriptivo, funcion, posiciones, alcance }) {
     document.getElementById('overlay').classList.remove('show');
     document.getElementById('overlayCopiar').classList.remove('show');
     document.getElementById('overlayActualizar').classList.remove('show');
@@ -1979,6 +2125,16 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       motivoTexto.textContent = 'Nueva Posición';
     }
 
+    // Unidad organizativa: la Gerente elige a qué unidad pertenece la nueva posición; en actualización se toma de las posiciones
+    const uSel = document.getElementById('fUnidad'), uBox = document.getElementById('fUnidadBox'), uReq = document.getElementById('fUnidadReq'), uIds = unidadesUsuario();
+    if (modo !== 'actualizar' && uIds.length > 1) {
+      uSel.innerHTML = '<option value="">Seleccione</option>' + uIds.map(i => `<option value="${i}">${UNIDADES[i].nombre}</option>`).join('');
+      uSel.value = ''; uSel.style.display = ''; uBox.style.display = 'none'; uReq.style.display = '';
+    } else {
+      const us = modo === 'actualizar' && posiciones ? [...new Set(posiciones.map(q => q.u))] : [uIds[0]];
+      uSel.innerHTML = `<option value="${us[0]}">${UNIDADES[us[0]].nombre}</option>`; uSel.value = String(us[0]); uSel.style.display = 'none';
+      uBox.textContent = us.map(i => UNIDADES[i].nombre).join(', '); uBox.style.display = ''; uReq.style.display = 'none';
+    }
     document.getElementById('exitoSolicitud').classList.remove('show');
     document.getElementById('formBody').style.display = '';
     document.querySelector('.btn-guardar').style.display = '';
@@ -1987,9 +2143,10 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     window._posicionActual = modo === 'actualizar' ? (codigoPosicion || null) : null;
     window._refPosicion = nombrePosicion ? { cod: codigoPosicion || '', nombre: nombrePosicion } : null;
     window._funcionRef = funcion || null;
+    window._alcanceInicio = alcance == null ? '' : alcance;
     window._posObjs = modo === 'actualizar' ? (posiciones || null) : null;
-    window._posBase = window._posObjs ? window._posObjs[0] : null;
     window._posSel = window._posObjs ? window._posObjs.map(q => q.cod) : (window._posicionActual ? [window._posicionActual] : []);
+    if (modo === 'actualizar') document.getElementById('posLabel').innerHTML = 'Posición de referencia: <span class="req">*</span>';
     document.getElementById('pageNuevaSolicitud').classList.add('show');
     cargarDatosSolicitud(modo, nombrePosicion, conDescriptivo);
   }
@@ -2032,7 +2189,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
         kpi: () => { const m = document.querySelector('.section-head h2').textContent.match(/\((\d+)\)/); return m ? m[1] : null; },
         go: () => mostrarInicio(false) },
       { id: 'datos', t: 'Datos del Sistema', ic: 'db', cap: 'Configuración', go: pronto('Datos del Sistema') },
-      { id: 'reporte', t: 'Reporte de Posiciones', ic: 'chart', cap: 'posiciones de tu jefatura',
+      { id: 'reporte', t: 'Reporte de Posiciones', ic: 'chart', get cap() { return USUARIO.id === 'sara' ? 'posiciones de tus jefaturas' : 'posiciones de tu jefatura'; },
         kpi: () => window.reporteTotal ? String(window.reporteTotal()) : null,
         go: () => abrirReporte() },
       { id: 'aprobacion', t: 'Aprobación de Solicitudes', ic: 'check', cap: 'por aprobar', kpi: () => window.aprobPendientes ? String(window.aprobPendientes()) : null, go: () => abrirAprobacion() }
@@ -2060,6 +2217,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       if (ver) { render(); home.scrollTop = 0; }
       home.classList.toggle('show', ver);
       document.querySelector('header').inert = ver;
+      document.querySelectorAll('header .icon, #pageNuevaSolicitud .icon').forEach(e => { e.textContent = USUARIO.ini; });
       document.querySelector('main').inert = ver;
     };
 
@@ -2129,20 +2287,13 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
   </div>
 </div>
 <script>
-  // Reporte de Posiciones: usa las posiciones de FUNCIONES_ACTUALIZAR (las mismas del box Descriptivo del Puesto)
+  // Reporte de Posiciones por usuario: Omar ve su jefatura; Sara (Gerente) ve todas sus unidades organizativas
   (function () {
-    const JEF = [
+    const UN = [
+      { cod: '7009781', nombre: 'Gerencia SAP y Procesos Financieros', resp: 'SARA CORDOVA' },
       { cod: '7009627', nombre: 'SAP Proyectos', resp: 'OMAR ALBERTO ZAMUDIO SURCO' },
-      { cod: '7009631', nombre: 'SAP Finanzas',  resp: 'CARLOS ENRIQUE ESPINOZA CURILLA' },
-      { cod: '7009635', nombre: 'SAP Soporte',   resp: 'VICTORIA NOCE CORDANO' }
+      { cod: '7009640', nombre: 'SAP Producción', resp: 'BENTO HUAYTALLA' }
     ];
-    const JEF_POS = { 801: 0, 802: 0, 803: 0, 805: 0, 808: 0, 804: 1, 807: 1, 806: 2, 809: 2 };
-    const DESC = { '701': ['7007635', 'Analista SAP'], '702': ['7007965', 'Especialista SAP'], '703': ['7008064', 'Coordinador de SAP Proyectos'] };
-    const EXTRA = {
-      801: { cod: 'C14187', act: '21/10/2026', mod: 'Omar Alberto Zamudio' }, 802: { cod: 'C14202' },
-      803: { cod: 'C14455', act: '21/10/2026', mod: 'Omar Alberto Zamudio' }, 804: { cod: 'C14120' },
-      805: { cod: 'C14310' }, 806: { cod: 'C14388' }
-    };
     const ico = d => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
     const TABS = [
       { id: 'todas', t: 'Todas', c: '#1B6FC9', i: ico('<rect x="5" y="3" width="9" height="18"/><rect x="14" y="9" width="5" height="12"/><path d="M8 7h3M8 11h3M8 15h3"/>') },
@@ -2153,19 +2304,15 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     const norm = t => (t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     const $ = id => document.getElementById(id);
     const est = { tab: 'todas', jef: '', cod: '', nom: '', q: '' };
-    let abiertos = new Set([0]);
+    const uid = () => window.usuarioActual().id;
+    const unidades = () => uid() === 'sara' ? [0, 1, 2] : [1];
+    let abiertos = new Set();
 
     function datos() {
-      // Omar lidera SAP Proyectos: su propia posición va primero y solo ve esta jefatura
-      const out = [{ j: 0, lider: true, uo: JEF[0].nombre, nombre: 'Omar Alberto Zamudio Surco', ecod: 'C12417', ocupada: true,
-        cod: '800', pos: 'Jefe de SAP Proyectos', fcod: '700', fnom: 'Jefe de SAP', act: '', mod: '', tieneDesc: true }];
-      FUNCIONES_ACTUALIZAR.forEach(f => f.posiciones.forEach(p => {
-        const j = JEF_POS[p.cod] ?? 0; if (j !== 0) return;
-        const e = EXTRA[p.cod] || {}, ocup = p.colab !== 'Vacante';
-        out.push({ j, uo: JEF[j].nombre, nombre: ocup ? p.colab : '', ecod: e.cod || '', ocupada: ocup, cod: p.cod, pos: p.nombre,
-          fcod: f.codigo, fnom: f.nombre, act: e.act || '', mod: e.mod || '', tieneDesc: !!p.desc });
-      }));
-      return out;
+      const yo = uid(), vis = unidades(), out = [];
+      FUNCIONES_ACTUALIZAR.forEach(f => f.posiciones.forEach(p => out.push({ u: p.u, lider: !!p.lider, yo: p.yo === yo, nombre: p.colab === 'Vacante' ? '' : p.colab,
+        ecod: p.ecod || '', ocupada: p.colab !== 'Vacante', cod: p.cod, pos: p.nombre, fcod: f.codigo, fnom: f.nombre, act: p.act || '', mod: p.mod || '', tieneDesc: !!p.desc })));
+      return out.filter(x => vis.includes(x.u)).sort((x, y) => x.u - y.u || (y.lider ? 1 : 0) - (x.lider ? 1 : 0));
     }
     const PDF = (on, cod) => `<button type="button" class="rp-pdf" data-pdf="${cod}" ${on ? '' : 'disabled title="Sin descriptivo"'} aria-label="Descargar PDF de la posición ${cod}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><text x="12" y="17" font-size="6" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none">PDF</text></svg></button>`;
 
@@ -2177,21 +2324,21 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
 
       const rows = todos.filter(r =>
         (est.tab === 'todas' || (est.tab === 'ocupadas' && r.ocupada) || (est.tab === 'vacantes' && !r.ocupada) || (est.tab === 'sindesc' && !r.tieneDesc)) &&
-        (est.jef === '' || String(r.j) === est.jef) &&
+        (est.jef === '' || String(r.u) === est.jef) &&
         (!est.cod || r.ecod.toLowerCase().includes(est.cod)) &&
         (!est.nom || norm(r.nombre).includes(est.nom)) &&
-        (!est.q || norm([r.uo, r.nombre, r.cod, r.pos, r.fcod, r.fnom, r.mod].join(' ')).includes(est.q)));
+        (!est.q || norm([UN[r.u].nombre, r.nombre, r.cod, r.pos, r.fcod, r.fnom, r.mod].join(' ')).includes(est.q)));
 
       const tabla = document.querySelector('.rp-table');
       tabla.querySelectorAll('tbody').forEach(t => t.remove());
       if (!rows.length) { tabla.insertAdjacentHTML('beforeend', '<tbody><tr><td class="rp-empty" colspan="9">No hay posiciones que coincidan con los filtros.</td></tr></tbody>'); return; }
 
-      JEF.forEach((jf, j) => {
-        const rs = rows.filter(r => r.j === j);
+      UN.forEach((jf, j) => {
+        const rs = rows.filter(r => r.u === j);
         if (!rs.length) return;
-        const filas = rs.map(r => `<tr class="rp-row${r.lider ? ' rp-me' : ''}">
+        const filas = rs.map(r => `<tr class="rp-row${r.yo ? ' rp-me' : ''}">
           <td></td>
-          <td>${r.ocupada ? r.nombre + (r.lider ? '<span class="rp-me-tag">Tú</span>' : '') : '<span class="rp-vac">Vacante</span>'}</td>
+          <td>${r.ocupada ? r.nombre + (r.yo ? '<span class="rp-me-tag">Tú</span>' : '') : '<span class="rp-vac">Vacante</span>'}</td>
           <td class="rp-num">${r.cod}</td><td>${r.pos}</td>
           <td class="rp-num">${r.fcod}</td><td>${r.fnom}</td>
           <td>${r.act}</td><td>${r.mod}</td><td>${PDF(r.tieneDesc, r.cod)}</td></tr>`).join('');
@@ -2201,9 +2348,21 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       });
     }
 
+    function syncResp() { $('rpResp').value = est.jef !== '' ? UN[+est.jef].resp : (unidades().length > 1 ? 'Todos' : UN[unidades()[0]].resp); }
+    function configurar() {
+      const vis = unidades(), multi = vis.length > 1;
+      $('rpJef').innerHTML = (multi ? '<option value="">Todas</option>' : '') + vis.map(i => `<option value="${i}">${UN[i].nombre} (${UN[i].cod})</option>`).join('');
+      $('rpJef').disabled = !multi;
+      ['rpCod', 'rpNom', 'rpQ'].forEach(id => { $(id).value = ''; });
+      Object.assign(est, { tab: 'todas', jef: '', cod: '', nom: '', q: '' });
+      syncResp(); abiertos = new Set([vis[0]]);
+    }
     function aplicar() {
       est.cod = $('rpCod').value.trim().toLowerCase(); est.nom = norm($('rpNom').value.trim());
-      if (est.cod || est.nom) abiertos = new Set([0]);
+      if (!$('rpJef').disabled) est.jef = $('rpJef').value;
+      syncResp();
+      if (est.jef !== '') abiertos = new Set([+est.jef]);
+      else if (est.cod || est.nom) abiertos = new Set(unidades());
       render();
     }
     function toggleGrupo(tr) {
@@ -2212,14 +2371,14 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       tr.setAttribute('aria-expanded', !col);
     }
 
-    $('rpJef').innerHTML = `<option>${JEF[0].nombre} (${JEF[0].cod})</option>`;
     $('rpBuscar').onclick = aplicar;
+    $('rpJef').onchange = aplicar;
     ['rpCod', 'rpNom'].forEach(id => $(id).onkeydown = e => { if (e.key === 'Enter') aplicar(); });
-    $('rpLimpiar').onclick = () => { ['rpCod', 'rpNom', 'rpQ'].forEach(id => $(id).value = ''); Object.assign(est, { tab: 'todas', jef: '', cod: '', nom: '', q: '' }); $('rpResp').value = JEF[0].resp; abiertos = new Set([0]); render(); };
-    $('rpQ').oninput = () => { est.q = norm($('rpQ').value.trim()); if (est.q) abiertos = new Set([0, 1, 2]); render(); };
-    $('rpAlert').onclick = () => { est.tab = 'sindesc'; abiertos = new Set([0, 1, 2]); render(); };
+    $('rpLimpiar').onclick = () => { configurar(); render(); };
+    $('rpQ').oninput = () => { est.q = norm($('rpQ').value.trim()); if (est.q) abiertos = new Set(unidades()); render(); };
+    $('rpAlert').onclick = () => { est.tab = 'sindesc'; abiertos = new Set(unidades()); render(); };
     $('rpTabs').onclick = e => { const b = e.target.closest('[data-tab]'); if (b) { est.tab = b.dataset.tab; render(); } };
-    $('rpExp').onclick = () => { abiertos = new Set([0, 1, 2]); render(); };
+    $('rpExp').onclick = () => { abiertos = new Set(unidades()); render(); };
     $('rpCol').onclick = () => { abiertos = new Set(); render(); };
     $('rpXls').onclick = () => mostrarToast('Exportación a Excel simulada en este prototipo');
     $('rpFtog').onclick = () => { const c = $('rpFiltros').classList.toggle('fcol'); $('rpFtog').setAttribute('aria-expanded', !c); };
@@ -2241,10 +2400,10 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     mostrarInicio(true);
 
     window.abrirReporte = function () {
-      abrirDesdeInicio();
-      abiertos = new Set([0]); render(); $('rp').scrollTop = 0; $('rp').classList.add('show');
+      document.getElementById('home').classList.remove('show');
+      document.querySelector('#rp .rp-bar .icon').textContent = window.usuarioActual().ini;
+      configurar(); render(); $('rp').scrollTop = 0; $('rp').classList.add('show');
     };
-    function abrirDesdeInicio() { document.getElementById('home').classList.remove('show'); }
   })();
 <\/script>
 <div class="ap" id="ap" aria-label="Aprobación de Solicitudes">
@@ -2292,20 +2451,28 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       riesgos: { 'Traslado fuera del lugar de trabajo': 'Ocasional' }, contexto: 'Requerimiento asociado a los proyectos de transformación del área.' };
     const mk = o => Object.assign({}, base, o);
     const F701 = { codigo: '701', nombre: 'Analista SAP' };
-    const P = (cod, nombre, colab, desc) => ({ cod, nombre, colab, desc });
-    const P801 = P('801', 'Analista SAP Proyectos', 'Juan Pérez', true), P802 = P('802', 'Analista SAP Proyectos', 'María Gómez', true), P805 = P('805', 'Analista SAP Junior', 'Pedro Ramírez', false);
+    const P = (cod, nombre, colab, desc, uo) => ({ cod, nombre, colab, desc, uo });
+    const P801 = P('801', 'Analista SAP Proyectos', 'Juan Pérez', true, 'SAP Proyectos'), P802 = P('802', 'Analista SAP Proyectos', 'María Gómez', true, 'SAP Proyectos'), P805 = P('805', 'Analista SAP Junior', 'Pedro Ramírez', false, 'SAP Proyectos');
+    const P811 = P('811', 'Analista SAP Producción', 'Rosa Linares', true, 'SAP Producción'), P812 = P('812', 'Analista SAP Producción', 'Diego Paredes', true, 'SAP Producción');
+    // Solicitud masiva de otra Gerencia (más de 10 posiciones): se ve solo con el rol Admin GH
+    const BIG = [['901', 'Analista SAP Comercial', 'Luis Barrios', true, 'SAP Comercial'], ['902', 'Analista SAP Comercial', 'Ana Ruiz', true, 'SAP Comercial'], ['903', 'Analista SAP Ventas', 'Vacante', false, 'SAP Comercial'],
+      ['904', 'Analista SAP Logística', 'Carlos Meza', true, 'SAP Logística'], ['905', 'Analista SAP Logística', 'Elena Rojas', true, 'SAP Logística'], ['906', 'Analista SAP Almacenes', 'Hugo León', false, 'SAP Logística'], ['907', 'Analista SAP Compras', 'Vacante', false, 'SAP Logística'],
+      ['908', 'Analista SAP Nómina', 'Gabriela Cruz', true, 'SAP Recursos Humanos'], ['909', 'Analista SAP Nómina', 'Iván Soto', true, 'SAP Recursos Humanos'], ['910', 'Analista SAP Talento', 'Rocío Paz', false, 'SAP Recursos Humanos'],
+      ['911', 'Analista SAP Mantenimiento', 'Julio Vera', true, 'SAP Mantenimiento'], ['912', 'Analista SAP Mantenimiento', 'Teresa Ríos', true, 'SAP Mantenimiento'], ['913', 'Analista SAP Planta', 'Vacante', false, 'SAP Mantenimiento'], ['914', 'Analista SAP Calidad', 'Óscar Gil', false, 'SAP Mantenimiento']].map(a => P(...a));
     const SOL = [
-      { id: 'SOL-202610-0029', fecha: '20.10.2026', tipo: 'cero', estado: 'N1', hist: [], sustento: 'Se requiere reforzar el equipo con un analista del módulo SD por el aumento de pedidos de proyectos.', posNueva: 'Analista SAP SD 2', det: mk({ nombre: 'Analista SAP SD 2' }) },
-      { id: 'SOL-202610-0027', fecha: '19.10.2026', tipo: 'copiar', estado: 'N1', hist: [], sustento: 'Posición equivalente a Analista SAP Proyectos para cubrir el frente de finanzas.', posNueva: 'Analista SAP Finanzas', ref: { cod: '802', nombre: 'Analista SAP Proyectos', colab: 'María Gómez', func: F701 }, det: mk({ nombre: 'Analista SAP Finanzas' }) },
-      { id: 'SOL-202610-0023', fecha: '19.10.2026', tipo: 'actualizar', estado: 'N1', hist: [], sustento: 'Actualizar responsabilidades y conocimientos por la migración a S/4HANA.', pos: [P801], func: F701, det: mk({ nombre: 'Analista SAP Proyectos' }) },
-      { id: 'SOL-202610-0020', fecha: '19.10.2026', tipo: 'actualizar', estado: 'N2', hist: [{ n: 1, quien: 'Sara Cordova', fecha: '20.10.2026', accion: 'Aprobó', com: 'Conforme con la actualización masiva.' }], sustento: 'Unificar el descriptivo de todas las posiciones de Analista SAP; la 805 no tenía descriptivo.', pos: [P801, P802, P805], func: F701, det: mk({ nombre: 'Analista SAP Proyectos' }) },
-      { id: 'SOL-202609-0018', fecha: '12.10.2026', tipo: 'actualizar', estado: 'APR', hist: [{ n: 1, quien: 'Sara Cordova', fecha: '13.10.2026', accion: 'Aprobó', com: '' }, { n: 2, quien: 'Roberto Silva', fecha: '14.10.2026', accion: 'Aprobó', com: 'Descriptivo publicado.' }], sustento: 'Ajuste de funciones principales de la posición.', pos: [P('803', 'Especialista SAP', 'Lucía Fernández', true)], func: { codigo: '702', nombre: 'Especialista SAP' }, det: mk({ nombre: 'Especialista SAP' }) },
-      { id: 'SOL-202609-0015', fecha: '08.10.2026', tipo: 'cero', estado: 'REC1', hist: [{ n: 1, quien: 'Sara Cordova', fecha: '09.10.2026', accion: 'Rechazó', com: 'Falta sustentar la necesidad de la posición.' }], sustento: 'Nueva posición de analista de datos.', posNueva: 'Analista de Datos SAP', det: mk({ nombre: 'Analista de Datos SAP' }) }
+      { id: 'SOL-202610-0033', fecha: '26.10.2026', tipo: 'actualizar', estado: 'N2', externa: true, solic: 'MARIO TELLO', n1: 'Mario Tello', hist: [{ n: 1, quien: 'Mario Tello', fecha: '26.10.2026', accion: 'Aprobó automáticamente', com: 'Solicitud generada por la Gerencia.' }], sustento: 'Homologar el descriptivo de Analista SAP en las gerencias de Comercial, Logística, RR.HH. y Mantenimiento.', refCod: '901', pos: BIG, func: F701, det: mk({ nombre: 'Analista SAP', uo: 'SAP Comercial, SAP Logística, SAP Recursos Humanos, SAP Mantenimiento' }) },
+      { id: 'SOL-202610-0031', fecha: '24.10.2026', tipo: 'actualizar', estado: 'N2', solic: 'SARA CORDOVA', hist: [{ n: 1, quien: 'Sara Cordova', fecha: '24.10.2026', accion: 'Aprobó automáticamente', com: 'Solicitud generada por la Gerencia.' }], sustento: 'Homologar el descriptivo de Analista SAP entre las jefaturas de Proyectos y Producción.', refCod: '801', pos: [P801, P811, P812], func: F701, det: mk({ nombre: 'Analista SAP', uo: 'SAP Proyectos, SAP Producción' }) },
+      { id: 'SOL-202610-0029', fecha: '20.10.2026', tipo: 'cero', estado: 'N1', hist: [], sustento: 'Se requiere reforzar el equipo con un analista del módulo SD por el aumento de pedidos de proyectos.', posNueva: 'Analista SAP SD 2', unidad: 'SAP Proyectos', det: mk({ nombre: 'Analista SAP SD 2' }) },
+      { id: 'SOL-202610-0027', fecha: '19.10.2026', tipo: 'copiar', estado: 'N1', hist: [], sustento: 'Posición equivalente a Analista SAP Proyectos para cubrir el frente de finanzas.', posNueva: 'Analista SAP Finanzas', unidad: 'SAP Proyectos', ref: { cod: '802', nombre: 'Analista SAP Proyectos', colab: 'María Gómez', uo: 'SAP Proyectos', func: F701 }, det: mk({ nombre: 'Analista SAP Finanzas' }) },
+      { id: 'SOL-202610-0023', fecha: '19.10.2026', tipo: 'actualizar', estado: 'N1', hist: [], sustento: 'Actualizar responsabilidades y conocimientos por la migración a S/4HANA.', refCod: '801', pos: [P801], func: F701, det: mk({ nombre: 'Analista SAP Proyectos' }) },
+      { id: 'SOL-202610-0020', fecha: '19.10.2026', tipo: 'actualizar', estado: 'N2', hist: [{ n: 1, quien: 'Sara Cordova', fecha: '20.10.2026', accion: 'Aprobó', com: 'Conforme con la actualización masiva.' }], sustento: 'Unificar el descriptivo de todas las posiciones de Analista SAP; la 805 no tenía descriptivo.', refCod: '801', pos: [P801, P802, P805], func: F701, det: mk({ nombre: 'Analista SAP Proyectos' }) },
+      { id: 'SOL-202609-0018', fecha: '12.10.2026', tipo: 'actualizar', estado: 'APR', hist: [{ n: 1, quien: 'Sara Cordova', fecha: '13.10.2026', accion: 'Aprobó', com: '' }, { n: 2, quien: 'Roberto Silva', fecha: '14.10.2026', accion: 'Aprobó', com: 'Descriptivo publicado.' }], sustento: 'Ajuste de funciones principales de la posición.', refCod: '803', pos: [P('803', 'Especialista SAP', 'Lucía Fernández', true, 'SAP Proyectos')], func: { codigo: '702', nombre: 'Especialista SAP' }, det: mk({ nombre: 'Especialista SAP' }) },
+      { id: 'SOL-202609-0015', fecha: '08.10.2026', tipo: 'cero', estado: 'REC1', hist: [{ n: 1, quien: 'Sara Cordova', fecha: '09.10.2026', accion: 'Rechazó', com: 'Falta sustentar la necesidad de la posición.' }], sustento: 'Nueva posición de analista de datos.', posNueva: 'Analista de Datos SAP', unidad: 'SAP Proyectos', det: mk({ nombre: 'Analista de Datos SAP' }) }
     ];
     let sel = null, tab = 'pend', lastSel = null;
     const usuario = () => window.usuarioActual();
     const grupo = x => x.estado === 'N1' || x.estado === 'N2' ? 'PEN' : x.estado === 'APR' ? 'APR' : 'REC';
-    const visible = x => usuario().id === 'sara' || ['N2', 'APR', 'REC2'].includes(x.estado);
+    const visible = x => x.externa ? usuario().id === 'roberto' : usuario().id === 'sara' || ['N2', 'APR', 'REC2'].includes(x.estado);
     const puede = x => (usuario().id === 'sara' && x.estado === 'N1') || (usuario().id === 'roberto' && x.estado === 'N2');
     window.aprobPendientes = () => SOL.filter(x => visible(x) && puede(x)).length;
 
@@ -2315,18 +2482,22 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       const filas = b => [...b.querySelectorAll('tr')].map(tr => [...tr.querySelectorAll('td')].map(td => { const i = td.querySelector('input,select,textarea'); return (i ? i.value : td.textContent).trim(); }).filter(Boolean)).filter(r => r.length && r[0] !== 'Sin datos');
       const lista = el => el.innerText.split('\n').map(t => t.trim()).filter(t => t.length > 1 && t !== 'Sin datos');
       const modo = window._modoActual, fn = window._funcionRef, rc = window._refPosicion;
+      const us = $('fUnidad'), unidadTxt = modo === 'actualizar' ? [...new Set((window._posObjs || []).map(q => UNIDADES[q.u].nombre))].join(', ') : us.options[us.selectedIndex].text;
       const x = { id, fecha: hoy.replace(/\//g, '.'), tipo: modo, estado: 'N1', hist: [], sustento: v('fSustentoPrincipal'),
-        det: { dir: 'Administración y Finanzas', uo: 'SAP Proyectos', nombre: v('fNombrePuesto'), resp: v('fResponsabilidad'),
+        det: { dir: 'Administración y Finanzas', uo: unidadTxt, nombre: v('fNombrePuesto'), resp: v('fResponsabilidad'),
           funciones: filas($('fFuncionesBody')).map(r => r.length > 3 ? r.slice(1, 4) : r), rjer: v('fReportaJerar'), rfunc: v('fReportaFunc'),
           supervisa: filas($('supervisaBody')), decisiones: lista($('listaDecisiones')), recom: lista($('listaRecomendaciones')),
           tclas: v('fTipoClasif'), sclas: v('fSustentoClasif'), nivel: v('fNivelEducativo'), carreras: v('fCarreras'),
           estudios: filas($('estudiosBody')), conoc: filas($('conocimientosBody')), riesgos: {}, contexto: v('fContexto') } };
-      if (modo === 'actualizar') { x.pos = window._posObjs || []; x.func = fn; }
-      else x.posNueva = v('fNombrePuesto');
+      if (modo === 'actualizar') { x.pos = (window._posObjs || []).map(q => ({ ...q, uo: UNIDADES[q.u].nombre })); x.func = fn; x.refCod = window._refPosicion ? window._refPosicion.cod : (x.pos[0] && x.pos[0].cod); }
+      else { x.posNueva = v('fNombrePuesto'); x.unidad = unidadTxt; }
       if (modo === 'copiar' && rc) {
         const o = FUNCIONES_ACTUALIZAR.flatMap(f => f.posiciones).find(q => q.cod === rc.cod);
-        x.ref = { cod: rc.cod, nombre: rc.nombre, colab: o ? o.colab : '', func: fn };
+        x.ref = { cod: rc.cod, nombre: rc.nombre, colab: o ? o.colab : '', uo: o ? UNIDADES[o.u].nombre : '', func: fn };
       }
+      const sara = window.usuarioActual().id === 'sara';
+      x.solic = window.usuarioActual().nombre.toUpperCase();
+      if (sara) { x.estado = 'N2'; x.hist.push({ n: 1, quien: 'Sara Cordova', fecha: x.fecha, accion: 'Aprobó automáticamente', com: 'Solicitud generada por la Gerencia.' }); }
       SOL.unshift(x);
     };
 
@@ -2357,22 +2528,23 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
 
     function queSolicita(x) {
       const box = (k, peq, t, sub) => `<div class="ap-hbox ${k}"><small>${peq}</small><b>${t}</b><span>${sub}</span></div>`;
-      if (x.tipo === 'cero') return `<div class="ap-pair">${box('new', 'Posición nueva', x.posNueva || '—', 'Función: por asignar')}</div><div class="ap-refn">Sin posición de referencia: el descriptivo se registró desde cero.</div>`;
+      if (x.tipo === 'cero') return `<div class="ap-pair">${box('new', 'Posición nueva', x.posNueva || '—', 'Unidad: ' + (x.unidad || '—') + ' · Función: por asignar')}</div><div class="ap-refn">Sin posición de referencia: el descriptivo se registró desde cero.</div>`;
       if (x.tipo === 'copiar') {
         const r = x.ref || {};
-        return `<div class="ap-pair">${box('ref', '📋 Posición de referencia', (r.cod ? r.cod + ' · ' : '') + (r.nombre || '—'), (r.func ? 'Función ' + r.func.codigo + ' · ' + r.func.nombre : '') + (r.colab && r.colab !== 'Vacante' ? ' · ' + r.colab : ''))}
-          <div class="ap-arrow" aria-hidden="true">→</div>${box('new', 'Posición nueva', x.posNueva || '—', 'Descriptivo copiado y editado')}</div>`;
+        return `<div class="ap-pair">${box('ref', '📋 Posición de referencia', (r.cod ? r.cod + ' · ' : '') + (r.nombre || '—'), (r.func ? 'Función ' + r.func.codigo + ' · ' + r.func.nombre : '') + (r.colab && r.colab !== 'Vacante' ? ' · ' + r.colab : '') + (r.uo ? ' · ' + r.uo : ''))}
+          <div class="ap-arrow" aria-hidden="true">→</div>${box('new', 'Posición nueva', x.posNueva || '—', 'Unidad: ' + (x.unidad || '—') + ' · Descriptivo copiado y editado')}</div>`;
       }
-      const n = x.pos.length;
-      return `${n > 1 ? `<div class="ap-banner">🔄 Actualización masiva: el nuevo descriptivo se aplicará a <b>${n} posiciones</b> de la función <b>${x.func.codigo} · ${x.func.nombre}</b>.</div>` : `<div class="ap-fn">Función <b>${x.func.codigo} · ${x.func.nombre}</b></div>`}
-        <table class="dt-t"><thead><tr><th>Código</th><th>Posición</th><th>Colaborador</th><th>Descriptivo actual</th></tr></thead><tbody>${x.pos.map(q => `<tr><td><b>${q.cod}</b></td><td>${q.nombre}</td><td>${q.colab === 'Vacante' ? '<span class="rp-vac">Vacante</span>' : q.colab}</td><td>${q.desc ? '<span class="badge-si">Sí</span> se reemplazará' : '<span class="badge-no">No</span> primer registro'}</td></tr>`).join('')}</tbody></table>`;
+      const n = x.pos.length, rf = x.pos.find(q => q.cod === x.refCod) || x.pos[0];
+      return `<div class="ap-pair">${box('ref', '📌 Posición de referencia', rf.cod + ' · ' + rf.nombre, 'Función ' + x.func.codigo + ' · ' + x.func.nombre + (rf.uo ? ' · ' + rf.uo : ''))}
+        <div class="ap-arrow" aria-hidden="true">→</div>${box('new', n > 1 ? 'Actualización masiva' : 'Se actualiza', n + (n === 1 ? ' posición' : ' posiciones'), n > 1 ? 'Mismo descriptivo para todas las posiciones' : 'Solo la posición de referencia')}</div>
+        <div style="margin-top:14px">${posListHTML(x.pos, rf.cod)}</div>`;
     }
     function timeline(x) {
       const h = n => (x.hist || []).find(r => r.n === n);
       const e1 = { N1: 'cur', N2: 'ok', APR: 'ok', REC1: 'rej', REC2: 'ok' }[x.estado], e2 = { N1: 'pend', REC1: 'pend', N2: 'cur', APR: 'ok', REC2: 'rej' }[x.estado];
       const IC = { ok: '✓', cur: '●', rej: '✕', pend: '○' }, CO = { ok: '#1B7F3A', cur: '#E07B00', rej: '#B3261E', pend: '#9AA0A6' };
-      return [{ t: 'Solicitud enviada', q: 'Omar Alberto Zamudio', s: 'ok', sub: x.fecha },
-        { t: 'Nivel 1 · Gerente', q: 'Sara Cordova', s: e1, n: 1 }, { t: 'Nivel 2 · Gestión Humana', q: 'Roberto Silva', s: e2, n: 2 }].map(p => {
+      return [{ t: 'Solicitud enviada', q: x.solic || 'OMAR ALBERTO ZAMUDIO', s: 'ok', sub: x.fecha },
+        { t: 'Nivel 1 · Gerente', q: x.n1 || 'Sara Cordova', s: e1, n: 1 }, { t: 'Nivel 2 · Gestión Humana', q: 'Roberto Silva', s: e2, n: 2 }].map(p => {
         const r = p.n && h(p.n), sub = p.sub || (r ? `${r.accion} el ${r.fecha}` : p.s === 'cur' ? 'Pendiente de aprobación' : 'Pendiente');
         return `<li class="ap-st" style="--c:${CO[p.s]}"><span class="ap-dot">${IC[p.s]}</span><div><b>${p.t}</b><div class="ap-q">${p.q}</div><div class="ap-sb">${sub}</div>${r && r.com ? `<div class="ap-com">“${r.com}”</div>` : ''}</div></li>`;
       }).join('');
@@ -2382,7 +2554,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       $('apFoot').style.display = x ? 'flex' : 'none';
       if (!x) { $('apDet').innerHTML = '<div class="ap-vacio">Selecciona una solicitud del listado.</div>'; return; }
       const d = x.det;
-      $('apDet').innerHTML = `<div class="ap-hd"><div><h1>${x.id}</h1><div class="ap-meta">Solicitante: <b>OMAR ALBERTO ZAMUDIO</b> · SAP y Procesos Financieros · Creada el ${x.fecha}</div></div>
+      $('apDet').innerHTML = `<div class="ap-hd"><div><h1>${x.id}</h1><div class="ap-meta">Solicitante: <b>${x.solic || 'OMAR ALBERTO ZAMUDIO'}</b> · SAP y Procesos Financieros · Creada el ${x.fecha}</div></div>
         <div class="ap-chips">${chip(TCHIP[tipoK(x)])}<span class="ap-chip" style="color:${EST[x.estado][1]};border:1px solid ${EST[x.estado][1]}">${EST[x.estado][0]}</span></div></div>
         <div class="ap-cols"><div>
           <section class="ap-card2"><h3>¿Qué se solicita?</h3>${queSolicita(x)}</section>
@@ -2397,6 +2569,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
       $('apOk').disabled = $('apNo').disabled = !ok;
       $('apNota').textContent = ok ? '' : (grupo(x) === 'PEN' ? 'Esta solicitud está pendiente en otro nivel de aprobación.' : 'Solicitud finalizada.');
       $('apVer').onclick = () => verDetalle(x);
+      posListBind($('apDet'));
     }
     function decidir(ok) {
       const x = SOL.find(r => r.id === sel); if (!x || !puede(x)) return;
@@ -2409,7 +2582,7 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     function bannerRef(x) {
       const t = x.tipo === 'cero' ? 'Descriptivo registrado desde cero, sin posición de referencia.'
         : x.tipo === 'copiar' ? `📋 Copiado de la posición de referencia <b>${x.ref ? (x.ref.cod ? x.ref.cod + ' · ' : '') + x.ref.nombre : '—'}</b>.`
-        : x.pos.length > 1 ? `🔄 Actualización masiva: aplica a ${x.pos.length} posiciones (${x.pos.map(q => q.cod).join(', ')}) de la función ${x.func.codigo} · ${x.func.nombre}.`
+        : x.pos.length > 1 ? `🔄 Actualización masiva: aplica a ${x.pos.length} posiciones${x.pos.length > 10 ? '' : ' (' + x.pos.map(q => q.cod).join(', ') + ')'} de la función ${x.func.codigo} · ${x.func.nombre}. Posición de referencia: <b>${x.refCod}</b>.`
         : `🔄 Actualiza la posición <b>${x.pos[0].cod} · ${x.pos[0].nombre}</b> (función ${x.func.codigo}).`;
       return `<div class="ap-banner" style="margin-bottom:14px">${t}</div>`;
     }
@@ -2470,14 +2643,12 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
     mostrarInicio(true);
   })();
 <\/script>
-<div class="mx-overlay" id="mxOverlay" role="dialog" aria-modal="true" aria-labelledby="mxTitulo">
-  <div class="mx-box">
-    <div class="mx-head"><span class="mx-ic" aria-hidden="true">i</span>
-      <div><h4 id="mxTitulo">¿A qué otras posiciones deseas aplicar la actualización?</h4><p id="mxSub"></p></div></div>
-    <div class="mx-tools"><label class="mx-all"><input type="checkbox" id="mxAll" style="width:16px;height:16px;accent-color:var(--red);margin:0"> Seleccionar todas</label><span class="mx-av" id="mxAv"></span></div>
-    <ul class="mx-list" id="mxList"></ul>
-    <div class="mx-foot"><span class="mx-count" id="mxCount"></span>
-      <div class="mx-btns"><button type="button" class="mx-btn" id="mxCancel">Cancelar</button><button type="button" class="mx-btn mx-ok" id="mxOk">Enviar solicitud</button></div></div>
+<div class="alc-ov" id="alcOv" role="dialog" aria-modal="true" aria-labelledby="alcTit">
+  <div class="alc-box">
+    <div class="alc-head"><span class="alc-i" aria-hidden="true">i</span><div><h3 id="alcTit">¿A qué otras posiciones deseas aplicar la actualización?</h3><p id="alcSub"></p></div></div>
+    <div class="alc-bar"><label><input type="checkbox" id="alcAll"> Seleccionar todas</label><span id="alcDisp"></span></div>
+    <div class="alc-list" id="alcLista"></div>
+    <div class="alc-foot"><span class="n" id="alcCount"></span><button type="button" class="alc-cancel" id="alcCancel">Cancelar</button><button type="button" class="alc-send" id="alcSend">Enviar solicitud</button></div>
   </div>
 </div>
 <div class="confirm-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitulo">
@@ -2491,66 +2662,18 @@ body:not(.in) .shell{display:none}body.in #login{display:none}
   </div>
 </div>
 <div class="toast" id="toast"></div>
-<script>
-  // Al enviar una Actualización de Descriptivo: elegir otras posiciones de la misma función (opcional)
-  function abrirSeleccionMasiva(done) {
-    const f = window._funcionActual, base = window._posBase;
-    const otras = f && base ? f.posiciones.filter(p => p.cod !== base.cod) : [];
-    if (!otras.length) { done(); return; }
-    const $m = id => document.getElementById(id);
-    const ov = $m('mxOverlay'), list = $m('mxList'), all = $m('mxAll'), previo = document.activeElement;
-    $m('mxSub').textContent = 'Solo se listan las posiciones de la función ' + f.codigo + ': ' + f.nombre + '. La posición ' + base.cod + ' ya está incluida. Es opcional: puedes enviar solo la actual.';
-    $m('mxAv').textContent = otras.length + (otras.length === 1 ? ' disponible' : ' disponibles');
-    list.innerHTML = f.posiciones.map(p => {
-      const act = p.cod === base.cod;
-      return `<li class="mx-row${act ? ' mx-actual' : ''}" data-cod="${p.cod}">
-        <input type="checkbox" value="${p.cod}" ${act ? 'checked disabled' : ''} aria-label="Aplicar también a la posición ${p.cod}">
-        <div class="mx-info"><div class="mx-l1"><b>${p.cod}</b> ${p.nombre}${act ? '<span class="mx-tag mx-tag-act">Esta solicitud</span>' : ''}${p.nueva ? '<span class="mx-tag mx-tag-nueva">Nueva</span>' : ''}</div>
-          <div class="mx-l2">${p.colab} · ${p.desc ? 'Con descriptivo' : 'Sin descriptivo'}</div></div>
-        <span>${p.desc ? '<span class="badge-si">Sí</span>' : '<span class="badge-no">No</span>'}</span></li>`;
-    }).join('');
-    const checks = () => [...list.querySelectorAll('input:not(:disabled)')];
-    function refrescar() {
-      const n = checks().filter(c => c.checked).length;
-      all.checked = n === otras.length; all.indeterminate = n > 0 && n < otras.length;
-      $m('mxCount').textContent = (n + 1) + (n + 1 === 1 ? ' posición a actualizar' : ' posiciones a actualizar');
-    }
-    list.querySelectorAll('.mx-row:not(.mx-actual)').forEach(r => {
-      const cb = r.querySelector('input');
-      cb.onchange = refrescar;
-      r.onclick = e => { if (e.target !== cb) { cb.checked = !cb.checked; refrescar(); } };
-    });
-    all.onchange = () => { checks().forEach(c => { c.checked = all.checked; }); refrescar(); };
-    function cerrar() { ov.classList.remove('show'); document.removeEventListener('keydown', onKey); if (previo && previo.focus) previo.focus(); }
-    function onKey(e) { if (e.key === 'Escape') cerrar(); }
-    $m('mxCancel').onclick = cerrar;
-    ov.onclick = e => { if (e.target === ov) cerrar(); };
-    $m('mxOk').onclick = () => {
-      const marcadas = checks().filter(c => c.checked).map(c => c.value);
-      const objs = f.posiciones.filter(p => p.cod === base.cod || marcadas.includes(p.cod)).map(({ cod, nombre, colab, desc }) => ({ cod, nombre, colab, desc }));
-      window._posObjs = objs; window._posSel = objs.map(q => q.cod);
-      if (objs.length > 1) {
-        document.getElementById('motivoTexto').textContent = 'Actualización de Descriptivo (masiva)';
-        document.getElementById('posLabel').innerHTML = 'Posiciones: <span class="req">*</span>';
-        document.getElementById('posValueBox').textContent = objs.length + ' posiciones (' + objs.map(q => q.cod).join(', ') + ') · ' + f.codigo + ': ' + f.nombre;
-      }
-      cerrar(); done();
-    };
-    document.addEventListener('keydown', onKey);
-    refrescar(); ov.classList.add('show'); $m('mxOk').focus();
-  }
-<\/script>
 <script>(function(){var b=document.getElementById('exitPortal');if(!b)return;var go=function(){parent.postMessage({tehExit:true},'*')};b.onclick=go;b.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}})();<\/script>
 </body>
 </html>
 </script>
 <div class="shell">
-<aside><div>
+<div id="navBd" hidden></div>
+<aside id="navAside"><div>
   <div class="prof" id="prof"></div>
   <nav id="nav"></nav></div>
   <nav><button class="out" id="salir">⏻ &nbsp;Salir</button></nav></aside>
 <main>
-  <div class="top"><span><span class="logo">Claro</span> &nbsp;<span class="m s">Talent Experience Hub</span></span><span class="pill" id="rolp"></span></div>
+  <div class="top"><span class="tl"><button type="button" id="burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="navAside">☰</button><span class="logo">Claro</span> &nbsp;<span class="m s">Talent Experience Hub</span></span><span class="pill" id="rolp"></span></div>
   <div id="view"></div>
 </main></div>
 
@@ -2831,5 +2954,13 @@ initLogin();
  window.addEventListener('message',function(e){
   if(e.source===fr.contentWindow&&e.data&&e.data.tehExit){document.body.classList.remove('desc');fr.srcdoc='';}
  });
+})();
+
+(function(){var b=document.getElementById('burger'),bd=document.getElementById('navBd');
+ function set(o){document.body.classList.toggle('navopen',o);b.setAttribute('aria-expanded',o?'true':'false');bd.hidden=!o}
+ b.onclick=function(){set(!document.body.classList.contains('navopen'))};bd.onclick=function(){set(false)};
+ document.addEventListener('click',function(e){if(e.target.closest('#nav button')||e.target.closest('#salir'))set(false)},true);
+ document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});
+ window.matchMedia('(min-width:901px)').addEventListener('change',function(e){if(e.matches)set(false)});
 })();
 </script></body></html>
